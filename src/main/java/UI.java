@@ -71,6 +71,7 @@ public class UI {
         output += (BOTTOMRIGHT_S);
 
         System.out.println(output);
+
     }
 
     public void showInfoBox(String message){
@@ -122,6 +123,8 @@ public class UI {
         output += (BOTTOMRIGHT_S);
 
         System.out.println(output);
+
+        System.out.print("Please select an option: ");
     }
 
     public boolean showYesNoDialogBox(String message, Scanner input){
@@ -177,6 +180,7 @@ public class UI {
         output += (BOTTOMRIGHT_S);
 
         System.out.println(output);
+        System.out.print("Please select an option: ");
         String inputChar = input.nextLine();
         if(inputChar=="1"){
             return true;
