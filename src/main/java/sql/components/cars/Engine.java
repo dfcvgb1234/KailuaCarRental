@@ -1,4 +1,4 @@
-package cars;
+package sql.components.cars;
 
 public class Engine {
 

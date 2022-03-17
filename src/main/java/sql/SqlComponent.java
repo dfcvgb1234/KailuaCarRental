@@ -1,3 +1,5 @@
+package sql;
+
 import java.util.List;
 
 public interface SqlComponent<Key, T> {
