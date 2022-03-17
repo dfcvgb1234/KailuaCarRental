@@ -1,6 +1,7 @@
 package sql;
 
 import java.sql.*;
+import java.util.Locale;
 
 public class SqlController {
 
@@ -19,12 +20,36 @@ public class SqlController {
         PreparedStatement s = null;
         try {
             s = con.prepareStatement(sql);
-            for (SqlParameter parameter : parameters) {
-                System.out.println(parameter.getType().getName());
+            for (int i = 0; i < parameters.length; i++) {
+                switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {
+
+                    case "integer":
+                        s.setInt(i, (int) parameters[i].getValue());
+                        break;
+
+                    case "string":
+                        s.setString(i, (String) parameters[i].getValue());
+                        break;
+
+
+                    case "double":
+                        s.setDouble(i, (Double) parameters[i].getValue());
+                        break;
+
+                    case "boolean":
+                        s.setBoolean(i, (Boolean) parameters[i].getValue());
+                        break;
+
+                    default:
+                        s.setObject(i, parameters[i].getValue());
+                        break;
+                }
             }
+            return s.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public void performSQLUpdate(String sql) {
