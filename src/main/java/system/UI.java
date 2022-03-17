@@ -20,19 +20,16 @@ public class UI {
     }
 
     public void showMultipleInfoBox(ArrayList<String> list){
-        int sizeX=1;
-        for(int i=0;i<list.size();i++){
-            String[] parts = list.get(i).split("\n");
-            List<String> partssorted = Arrays.asList(parts);
-            partssorted.sort(Comparator.comparing(String::length));
+        int sizeX=5;
+        for(int i=0;i<list.size();i++){ //Looping through all entries in string list
+            String[] parts = list.get(i).split("\n"); //Splitting string per new line to string array
+            List<String> partssorted = Arrays.asList(parts); //converting string array to list, as sorting is easier
+            partssorted.sort(Comparator.comparing(String::length)); //sorting string array by string length
             if(partssorted.get(partssorted.size()-1).length()>sizeX){
-                sizeX=partssorted.get(partssorted.size()-1).length();
+                sizeX=partssorted.get(partssorted.size()-1).length(); //Setting size X to the longest string length in array
             }
         }
-        if(sizeX<5){
-            sizeX=5;
-        }
-        String output;
+        String output; //This will be our final print
 
         //Start with top line
         output = (TOPLEFT_S);
@@ -41,12 +38,18 @@ public class UI {
         }
         output += (TOPRIGHT_S+"\n");
 
-        for(int k=0;k<list.size();k++) {
 
+        //The tricky one - One solid box split by lines containing the different entries
+        for(int k=0;k<list.size();k++) { //Loop through all entries in array
+
+            //This seems redundant. Double check code to see if partsorted2.size can be replaced with
+            //parts.length, and parts2[i].length can be replaced with parts[i].length.
+            //Sorting makes no sense here?? We're trying to find the Y length, not X!
             String[] parts = list.get(k).split("\n");
             String[] parts2 = list.get(k).split("\n");
             List<String> partssorted2 = Arrays.asList(parts);
             partssorted2.sort(Comparator.comparing(String::length));
+
             //Create text
             int sizeY = partssorted2.size();
             for (int i = 0; i < sizeY; i++) {
@@ -57,6 +60,8 @@ public class UI {
                 output += SIDERIGHT_S + "\n";
             }
 
+
+            //Creating split line, if more lines exist afterwards in string array
             if(k!=list.size()-1){
                 output += (SPLITLEFT_S);
                 for(int i=0;i<sizeX;i++){
@@ -131,8 +136,7 @@ public class UI {
 
     public boolean showYesNoDialogBox(String message, Scanner input){
         String[] parts = message.split("\n");
-
-        String[] parts2 = message.split("\n");
+        String[] parts2 = message.split("\n"); //Idk why this has to exist, but for some reason it does.
         List<String> partssorted = Arrays.asList(parts);
         partssorted.sort(Comparator.comparing(String::length));
         int sizeX = partssorted.get(partssorted.size()-1).length();
