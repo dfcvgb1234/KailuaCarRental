@@ -19,10 +19,22 @@ import com.google.gson.reflect.TypeToken;
 
 public class HttpHelper {
 
-    public void getDMRCar(String regNumber) {
-        try {
+    public DMRCar getDMRCar(String regNumber) {
 
-            var uri = URI.create("https://www.tjekbil.dk/api/v3/dmr/regnrquery/" + regNumber);
+            String response = performGetRequest("https://www.tjekbil.dk/api/v3/dmr/regnrquery/" + regNumber);
+
+            Gson gson = new GsonBuilder().create();
+            List<DMRCar> cars = gson.fromJson(response, new TypeToken<List<DMRCar>>(){}.getType());
+
+            return cars.get(0);
+    }
+
+    public String performGetRequest(String url) {
+
+        String body = "";
+        try
+        {
+            var uri = URI.create(url);
             var client = HttpClient.newHttpClient();
             var request = HttpRequest
                     .newBuilder()
@@ -31,13 +43,8 @@ public class HttpHelper {
                     .GET()
                     .build();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.statusCode());
-            System.out.println(response.body());
 
-            Gson gson = new GsonBuilder().create();
-
-            List<DMRCar> car = gson.fromJson(response.body(), new TypeToken<List<DMRCar>>(){}.getType());
-            System.out.println(car.get(0).maerkeTypeNavn + " " + car.get(0).modelTypeNavn + " " + car.get(0).variantTypeNavn);
+            body = response.body();
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -45,6 +52,9 @@ public class HttpHelper {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+        finally {
+            return body;
         }
     }
 }
