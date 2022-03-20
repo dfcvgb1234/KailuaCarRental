@@ -3,7 +3,7 @@ package sql.components.cars;
 import rest.DMRCar;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 
 public abstract class Car {
 
@@ -16,6 +16,56 @@ public abstract class Car {
     private int odometer;
     private Engine engineConfiguration;
     private ArrayList<String> carFeatures;
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public String getModel() {
+        return model;
+    }
+
+    public String getVariant() {
+        return variant;
+    }
+
+    public String getFuelType() {
+        return fuelType;
+    }
+
+    public Date getRegDate() {
+        return regDate;
+    }
+
+    public String getRegNumber() {
+        return regNumber;
+    }
+
+    public int getOdometer() {
+        return odometer;
+    }
+
+    public Engine getEngineConfiguration() {
+        return engineConfiguration;
+    }
+
+    public ArrayList<String> getCarFeatures() {
+        return carFeatures;
+    }
+
+    public String getSerializedCarFeatures() {
+        String features = "";
+
+        for (int i = 0; i < carFeatures.size(); i++) {
+            if (i+1 == carFeatures.size()) {
+                features += carFeatures.get(i);
+            } else {
+                features += carFeatures.get(i) + ", ";
+            }
+        }
+
+        return features;
+    }
 
     public Car(DMRCar newCar) {
         this.brand = newCar.getMaerkeTypeNavn();
@@ -35,6 +85,7 @@ public abstract class Car {
 
     public static class Builder {
 
+        private String registrationNumber;
         private String brand;
         private String model;
         private String variant;
@@ -44,6 +95,11 @@ public abstract class Car {
         private int odometer;
         private Engine engineConfiguration;
         private ArrayList<String> carFeatures;
+
+        public Builder setRegistrationNumber(String registrationNumber) {
+            this.registrationNumber = registrationNumber;
+            return this;
+        }
 
         public Builder setBrand(String brand) {
             this.brand = brand;

@@ -13,7 +13,7 @@ public class SqlController {
         this.password = password;
     }
 
-    private final String JDBC_URL = "jdbc:mysql://localhost:3306/car_rental_db";
+    private final String JDBC_URL = "jdbc:mysql://mysql.berggame.nu/car_rental_db";
 
     public ResultSet performSQLSelect(String sql, SqlParameter... parameters) {
         Connection con = getConnection();
@@ -31,7 +31,6 @@ public class SqlController {
                         s.setString(i, (String) parameters[i].getValue());
                         break;
 
-
                     case "double":
                         s.setDouble(i, (Double) parameters[i].getValue());
                         break;
@@ -40,8 +39,16 @@ public class SqlController {
                         s.setBoolean(i, (Boolean) parameters[i].getValue());
                         break;
 
+                    case "date":
+                        s.setDate(i, (Date) parameters[i].getValue());
+                        break;
+
+                    case "timestamp":
+                        s.setTimestamp(i, (Timestamp) parameters[i].getValue());
+                        break;
+
                     default:
-                        s.setObject(i, parameters[i].getValue());
+                        s.setString(i, parameters[i].getValue().toString());
                         break;
                 }
             }
@@ -52,8 +59,47 @@ public class SqlController {
         return null;
     }
 
-    public void performSQLUpdate(String sql) {
+    public void performSQLUpdate(String sql, SqlParameter... parameters) {
+        Connection con = getConnection();
+        PreparedStatement s = null;
+        try {
+            s = con.prepareStatement(sql);
+            for (int i = 0; i < parameters.length; i++) {
+                switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {
 
+                    case "integer":
+                        s.setInt(i, (int) parameters[i].getValue());
+                        break;
+
+                    case "string":
+                        s.setString(i, (String) parameters[i].getValue());
+                        break;
+
+                    case "double":
+                        s.setDouble(i, (Double) parameters[i].getValue());
+                        break;
+
+                    case "boolean":
+                        s.setBoolean(i, (Boolean) parameters[i].getValue());
+                        break;
+
+                    case "date":
+                        s.setDate(i, (Date) parameters[i].getValue());
+                        break;
+
+                    case "timestamp":
+                        s.setTimestamp(i, (Timestamp) parameters[i].getValue());
+                        break;
+
+                    default:
+                        s.setString(i, parameters[i].getValue().toString());
+                        break;
+                }
+            }
+            s.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private Connection getConnection() {
