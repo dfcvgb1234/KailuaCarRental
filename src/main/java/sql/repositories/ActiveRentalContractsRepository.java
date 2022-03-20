@@ -108,15 +108,13 @@ public class ActiveRentalContractsRepository implements SqlComponent<String, Ren
         Car rentalCar = new CarRepository().findFirstById(result.getString("CarId"));
         Customer customer = new CustomerRepository().findFirstById(result.getInt("CustomerId"));
 
-        RentalContract contract = new RentalContract(
+        return new RentalContract(
                 rentalCar,
                 customer,
                 result.getTimestamp("StartTime"),
                 result.getTimestamp("EndTime"),
                 result.getInt("DrivenRange")
         );
-
-        return contract;
 
     }
 }

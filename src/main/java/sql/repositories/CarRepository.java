@@ -114,20 +114,12 @@ public class CarRepository implements SqlComponent<String, Car> {
     }
 
     private String getCarType (Car car) {
-        switch (car.getClass().getSimpleName()) {
-
-            case "FamilyCar":
-                return "Family Car";
-
-            case "LuxuryCar":
-                return "Luxury Car";
-
-            case "SportsCar":
-                return "Sports Car";
-
-            default :
-                return "";
-        }
+        return switch (car.getClass().getSimpleName()) {
+            case "FamilyCar" -> "Family Car";
+            case "LuxuryCar" -> "Luxury Car";
+            case "SportsCar" -> "Sports Car";
+            default -> "";
+        };
     }
 
 
@@ -150,19 +142,11 @@ public class CarRepository implements SqlComponent<String, Car> {
         carBuilder.setOdometer(result.getInt("Odometer"));
         carBuilder.setCarFeatures(new ArrayList<String>(List.of(result.getString("CarFeatures").split(","))));
 
-        switch (result.getString("CarType").toLowerCase()) {
-
-            case "sports car":
-                return carBuilder.buildSportsCar();
-
-            case "luxury car":
-                return carBuilder.buildLuxuryCar();
-
-            case "family car":
-                return carBuilder.buildFamilyCar();
-
-            default:
-                return null;
-        }
+        return switch (result.getString("CarType").toLowerCase()) {
+            case "sports car" -> carBuilder.buildSportsCar();
+            case "luxury car" -> carBuilder.buildLuxuryCar();
+            case "family car" -> carBuilder.buildFamilyCar();
+            default -> null;
+        };
     }
 }

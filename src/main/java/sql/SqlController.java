@@ -17,39 +17,18 @@ public class SqlController {
 
     public ResultSet performSQLSelect(String sql, SqlParameter... parameters) {
         Connection con = getConnection();
-        PreparedStatement s = null;
+        PreparedStatement s;
         try {
             s = con.prepareStatement(sql);
             for (int i = 0; i < parameters.length; i++) {
                 switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {
-
-                    case "integer":
-                        s.setInt(i, (int) parameters[i].getValue());
-                        break;
-
-                    case "string":
-                        s.setString(i, (String) parameters[i].getValue());
-                        break;
-
-                    case "double":
-                        s.setDouble(i, (Double) parameters[i].getValue());
-                        break;
-
-                    case "boolean":
-                        s.setBoolean(i, (Boolean) parameters[i].getValue());
-                        break;
-
-                    case "date":
-                        s.setDate(i, (Date) parameters[i].getValue());
-                        break;
-
-                    case "timestamp":
-                        s.setTimestamp(i, (Timestamp) parameters[i].getValue());
-                        break;
-
-                    default:
-                        s.setString(i, parameters[i].getValue().toString());
-                        break;
+                    case "integer" -> s.setInt(i, (int) parameters[i].getValue());
+                    case "string" -> s.setString(i, (String) parameters[i].getValue());
+                    case "double" -> s.setDouble(i, (Double) parameters[i].getValue());
+                    case "boolean" -> s.setBoolean(i, (Boolean) parameters[i].getValue());
+                    case "date" -> s.setDate(i, (Date) parameters[i].getValue());
+                    case "timestamp" -> s.setTimestamp(i, (Timestamp) parameters[i].getValue());
+                    default -> s.setString(i, parameters[i].getValue().toString());
                 }
             }
             return s.executeQuery();
@@ -61,39 +40,18 @@ public class SqlController {
 
     public void performSQLUpdate(String sql, SqlParameter... parameters) {
         Connection con = getConnection();
-        PreparedStatement s = null;
+        PreparedStatement s;
         try {
             s = con.prepareStatement(sql);
             for (int i = 0; i < parameters.length; i++) {
                 switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {
-
-                    case "integer":
-                        s.setInt(i, (int) parameters[i].getValue());
-                        break;
-
-                    case "string":
-                        s.setString(i, (String) parameters[i].getValue());
-                        break;
-
-                    case "double":
-                        s.setDouble(i, (Double) parameters[i].getValue());
-                        break;
-
-                    case "boolean":
-                        s.setBoolean(i, (Boolean) parameters[i].getValue());
-                        break;
-
-                    case "date":
-                        s.setDate(i, (Date) parameters[i].getValue());
-                        break;
-
-                    case "timestamp":
-                        s.setTimestamp(i, (Timestamp) parameters[i].getValue());
-                        break;
-
-                    default:
-                        s.setString(i, parameters[i].getValue().toString());
-                        break;
+                    case "integer" -> s.setInt(i, (int) parameters[i].getValue());
+                    case "string" -> s.setString(i, (String) parameters[i].getValue());
+                    case "double" -> s.setDouble(i, (Double) parameters[i].getValue());
+                    case "boolean" -> s.setBoolean(i, (Boolean) parameters[i].getValue());
+                    case "date" -> s.setDate(i, (Date) parameters[i].getValue());
+                    case "timestamp" -> s.setTimestamp(i, (Timestamp) parameters[i].getValue());
+                    default -> s.setString(i, parameters[i].getValue().toString());
                 }
             }
             s.executeUpdate();

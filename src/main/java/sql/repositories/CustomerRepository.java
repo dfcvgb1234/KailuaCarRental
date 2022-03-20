@@ -160,7 +160,7 @@ public class CustomerRepository implements SqlComponent<Integer, Customer> {
                 result.getString("CountryOfOrigin")
         );
 
-        Customer customer = new Customer(
+        return new Customer(
                 result.getInt("Id"),
                 result.getString("FullName"),
                 result.getString("Address"),
@@ -169,7 +169,5 @@ public class CustomerRepository implements SqlComponent<Integer, Customer> {
                 result.getString("Email"),
                 license
         );
-
-        return customer;
     }
 }

@@ -54,17 +54,17 @@ public abstract class Car {
     }
 
     public String getSerializedCarFeatures() {
-        String features = "";
+        StringBuilder features = new StringBuilder();
 
         for (int i = 0; i < carFeatures.size(); i++) {
             if (i+1 == carFeatures.size()) {
-                features += carFeatures.get(i);
+                features.append(carFeatures.get(i));
             } else {
-                features += carFeatures.get(i) + ", ";
+                features.append(carFeatures.get(i)).append(", ");
             }
         }
 
-        return features;
+        return features.toString();
     }
 
     public Car(DMRCar newCar) {

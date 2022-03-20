@@ -101,7 +101,7 @@ public class CompletedRentalContractsRepository implements SqlComponent <Integer
         Car rentalCar = new CarRepository().findFirstById(result.getString("CarId"));
         Customer customer = new CustomerRepository().findFirstById(result.getInt("CustomerId"));
 
-        RentalContract contract = new RentalContract(
+        return new RentalContract(
                 result.getInt("Id"),
                 rentalCar,
                 customer,
@@ -109,8 +109,6 @@ public class CompletedRentalContractsRepository implements SqlComponent <Integer
                 result.getTimestamp("EndTime"),
                 result.getInt("DrivenRange")
         );
-
-        return contract;
 
     }
 }
