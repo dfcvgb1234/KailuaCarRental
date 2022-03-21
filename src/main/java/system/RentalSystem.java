@@ -471,15 +471,6 @@ public class RentalSystem {
 
     }
 
-    public Customer createCustomer(Scanner input){
-        ui.showInfoBox("Create a customer");
-
-        return null;
-    }
-
-    public void editCustomer(Scanner input){
-
-    }
     public void removeCar(Scanner input){
         ui.showInfoBox("Remove a car from the database");
 
@@ -509,12 +500,25 @@ public class RentalSystem {
             }
         }
     }
+
+    public Customer createCustomer(Scanner input){
+        ui.showInfoBox("Create a customer");
+
+        return null;
+    }
+
+    public void editCustomer(Scanner input){
+
+    }
+
     public void scheduleRepair(Scanner input){
 
     }
+
     public void viewActiveRepairs(Scanner input){
 
     }
+
     public void viewRepairHistory(Scanner input){
 
     }
