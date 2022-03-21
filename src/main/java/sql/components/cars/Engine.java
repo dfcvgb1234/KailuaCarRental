@@ -4,6 +4,7 @@ public class Engine {
 
     private int engineSize;
     private int enginePower;
+    private String fuelType;
 
     public int getEngineSize() {
         return engineSize;
@@ -21,8 +22,17 @@ public class Engine {
         this.enginePower = enginePower;
     }
 
-    public Engine(int engineSize, int enginePower) {
+    public String getFuelType() {
+        return fuelType;
+    }
+
+    public void setFuelType(String fuelType) {
+        this.fuelType = fuelType;
+    }
+
+    public Engine(int engineSize, int enginePower, String fuelType) {
         this.engineSize = engineSize;
         this.enginePower = enginePower;
+        this.fuelType = fuelType;
     }
 }

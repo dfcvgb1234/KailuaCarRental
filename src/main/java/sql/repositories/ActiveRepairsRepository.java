@@ -1,6 +1,6 @@
 package sql.repositories;
 
-import sql.SqlComponent;
+import sql.SqlRepository;
 import sql.SqlController;
 import sql.SqlParameter;
 import sql.components.Mechanic;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActiveRepairsRepository implements SqlComponent<String, Repair> {
+public class ActiveRepairsRepository implements SqlRepository<String, Repair> {
 
     private final String VIEW_NAME = "view_active_repairs";
 
@@ -86,7 +86,7 @@ public class ActiveRepairsRepository implements SqlComponent<String, Repair> {
         int zipCode = Integer.parseInt(repair.getMechanic().getAddress().split(",")[1].trim());
         String country = repair.getMechanic().getAddress().split(",")[3].trim();
 
-        controller.performSQLUpdate("CALL sp_ScheduleRepair(?,?,?,?,?,?,?,?)",
+        controller.performSQLUpdate("CALL sp_ScheduleRepair(?,?,?,?,?,?,?,?,?)",
                 new SqlParameter<String>(repair.getMechanic().getName()),
                 new SqlParameter<String>(address),
                 new SqlParameter<Integer>(zipCode),
@@ -94,7 +94,8 @@ public class ActiveRepairsRepository implements SqlComponent<String, Repair> {
                 new SqlParameter<String>(repair.getMechanic().getPhoneNumber()),
                 new SqlParameter<String>(repair.getCar().getRegNumber()),
                 new SqlParameter<String>(repair.getRepairLocation()),
-                new SqlParameter<String>(repair.getNote()));
+                new SqlParameter<String>(repair.getNote()),
+                new SqlParameter<Double>(repair.getCost()));
     }
 
     @Override
@@ -106,7 +107,7 @@ public class ActiveRepairsRepository implements SqlComponent<String, Repair> {
             int zipCode = Integer.parseInt(repair.getMechanic().getAddress().split(",")[1].trim());
             String country = repair.getMechanic().getAddress().split(",")[3].trim();
 
-            controller.performSQLUpdate("CALL sp_ScheduleRepair(?,?,?,?,?,?,?,?)",
+            controller.performSQLUpdate("CALL sp_ScheduleRepair(?,?,?,?,?,?,?,?,?)",
                     new SqlParameter<String>(repair.getMechanic().getName()),
                     new SqlParameter<String>(address),
                     new SqlParameter<Integer>(zipCode),
@@ -114,7 +115,8 @@ public class ActiveRepairsRepository implements SqlComponent<String, Repair> {
                     new SqlParameter<String>(repair.getMechanic().getPhoneNumber()),
                     new SqlParameter<String>(repair.getCar().getRegNumber()),
                     new SqlParameter<String>(repair.getRepairLocation()),
-                    new SqlParameter<String>(repair.getNote()));
+                    new SqlParameter<String>(repair.getNote()),
+                    new SqlParameter<Double>(repair.getCost()));
         }
     }
 
@@ -132,6 +134,7 @@ public class ActiveRepairsRepository implements SqlComponent<String, Repair> {
                 result.getTimestamp("StartTime"),
                 result.getString("RepairLocation"),
                 result.getString("Note"),
+                result.getDouble("Cost"),
                 mechanic
         );
     }

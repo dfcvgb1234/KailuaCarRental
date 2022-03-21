@@ -13,22 +13,25 @@ public class RentalContract {
     private Timestamp startDate;
     private Timestamp endDate;
     private int kilometers;
+    private double price;
 
-    public RentalContract(int Id, Car car, Customer customer, Timestamp startDate, Timestamp endDate, int kilometers) {
+    public RentalContract(int Id, Car car, Customer customer, Timestamp startDate, Timestamp endDate, int kilometers, double price) {
         this.Id = Id;
         this.car = car;
         this.customer = customer;
         this.startDate = startDate;
         this.endDate = endDate;
         this.kilometers = kilometers;
+        this.price = price;
     }
 
-    public RentalContract(Car car, Customer customer, Timestamp startDate, Timestamp endDate, int kilometers) {
+    public RentalContract(Car car, Customer customer, Timestamp startDate, Timestamp endDate, int kilometers, double price) {
         this.car = car;
         this.customer = customer;
         this.startDate = startDate;
         this.endDate = endDate;
         this.kilometers = kilometers;
+        this.price = price;
     }
 
     public Car getCar() {

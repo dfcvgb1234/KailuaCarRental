@@ -1,6 +1,6 @@
 package sql.repositories;
 
-import sql.SqlComponent;
+import sql.SqlRepository;
 import sql.SqlController;
 import sql.SqlParameter;
 import sql.components.RentalContract;
@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActiveRentalContractsRepository implements SqlComponent<String, RentalContract> {
+public class ActiveRentalContractsRepository implements SqlRepository<String, RentalContract> {
 
     private final String TABLE_NAME = "active_rental_contracts";
 

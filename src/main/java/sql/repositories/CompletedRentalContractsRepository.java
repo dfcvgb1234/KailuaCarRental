@@ -1,6 +1,6 @@
 package sql.repositories;
 
-import sql.SqlComponent;
+import sql.SqlRepository;
 import sql.SqlController;
 import sql.SqlParameter;
 import sql.components.RentalContract;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompletedRentalContractsRepository implements SqlComponent <Integer, RentalContract> {
+public class CompletedRentalContractsRepository implements SqlRepository<Integer, RentalContract> {
 
     private final String TABLE_NAME = "completed_rental_contracts";
 

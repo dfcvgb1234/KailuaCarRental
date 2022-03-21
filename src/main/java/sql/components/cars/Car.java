@@ -10,12 +10,14 @@ public abstract class Car {
     private String brand;
     private String model;
     private String variant;
-    private String fuelType;
     private Date regDate;
     private String regNumber;
+    private double pricePerKilometer;
     private int odometer;
     private Engine engineConfiguration;
     private ArrayList<String> carFeatures;
+
+
 
     public String getBrand() {
         return brand;
@@ -29,8 +31,8 @@ public abstract class Car {
         return variant;
     }
 
-    public String getFuelType() {
-        return fuelType;
+    public double getPricePerKilometer() {
+        return pricePerKilometer;
     }
 
     public Date getRegDate() {
@@ -67,16 +69,16 @@ public abstract class Car {
         return features.toString();
     }
 
-    public Car(DMRCar newCar) {
+    public Car(DMRCar newCar, double pricePerKilometer) {
         this.brand = newCar.getMaerkeTypeNavn();
         this.model = newCar.getModelTypeNavn();
         this.variant = newCar.getVariantTypeNavn();
-        this.fuelType = newCar.getDrivkraftTypeNavn();
         this.regDate = newCar.getFoersteRegistreringDato();
         this.regNumber = newCar.getRegNr();
         this.odometer = newCar.getMotorKilometerstand();
-        this.engineConfiguration = new Engine((int)newCar.getMotorSlagVolumen(), newCar.getMotorHestekraefter());
+        this.engineConfiguration = new Engine((int)newCar.getMotorSlagVolumen(), newCar.getMotorHestekraefter(), newCar.getDrivkraftTypeNavn());
         this.carFeatures = newCar.getKoeretoejUdstyrSamling();
+        this.pricePerKilometer = pricePerKilometer;
     }
 
     public Car() {
@@ -89,9 +91,9 @@ public abstract class Car {
         private String brand;
         private String model;
         private String variant;
-        private String fuelType;
         private Date regDate;
         private String regNumber;
+        private double pricePerKilometer;
         private int odometer;
         private Engine engineConfiguration;
         private ArrayList<String> carFeatures;
@@ -116,11 +118,6 @@ public abstract class Car {
             return this;
         }
 
-        public Builder setFuelType(String fuelType) {
-            this.fuelType = fuelType;
-            return this;
-        }
-
         public Builder setRegDate(Date regDate) {
             this.regDate = regDate;
             return this;
@@ -128,6 +125,11 @@ public abstract class Car {
 
         public Builder setRegNumber(String regNumber) {
             this.regNumber = regNumber;
+            return this;
+        }
+
+        public Builder setPricePerKilometer(double pricePerKilometer) {
+            this.pricePerKilometer = pricePerKilometer;
             return this;
         }
 
@@ -151,9 +153,9 @@ public abstract class Car {
             ((Car) car).brand = brand;
             ((Car) car).model = model;
             ((Car) car).variant = variant;
-            ((Car) car).fuelType = fuelType;
             ((Car) car).regDate = regDate;
             ((Car) car).regNumber = regNumber;
+            ((Car) car).pricePerKilometer = pricePerKilometer;
             ((Car) car).odometer = odometer;
             ((Car) car).engineConfiguration = engineConfiguration;
             ((Car) car).carFeatures = carFeatures;
@@ -166,9 +168,9 @@ public abstract class Car {
             ((Car) car).brand = brand;
             ((Car) car).model = model;
             ((Car) car).variant = variant;
-            ((Car) car).fuelType = fuelType;
             ((Car) car).regDate = regDate;
             ((Car) car).regNumber = regNumber;
+            ((Car) car).pricePerKilometer = pricePerKilometer;
             ((Car) car).odometer = odometer;
             ((Car) car).engineConfiguration = engineConfiguration;
             ((Car) car).carFeatures = carFeatures;
@@ -181,9 +183,9 @@ public abstract class Car {
             ((Car) car).brand = brand;
             ((Car) car).model = model;
             ((Car) car).variant = variant;
-            ((Car) car).fuelType = fuelType;
             ((Car) car).regDate = regDate;
             ((Car) car).regNumber = regNumber;
+            ((Car) car).pricePerKilometer = pricePerKilometer;
             ((Car) car).odometer = odometer;
             ((Car) car).engineConfiguration = engineConfiguration;
             ((Car) car).carFeatures = carFeatures;

@@ -1,9 +1,8 @@
 package sql.repositories;
 
-import sql.SqlComponent;
+import sql.SqlRepository;
 import sql.SqlController;
 import sql.SqlParameter;
-import sql.components.cars.Car;
 import sql.components.customers.Customer;
 import sql.components.customers.DriverLicense;
 
@@ -13,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerRepository implements SqlComponent<Integer, Customer> {
+public class CustomerRepository implements SqlRepository<Integer, Customer> {
 
     private final String VIEW_NAME = "view_customers";
 

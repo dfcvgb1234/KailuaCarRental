@@ -1,6 +1,6 @@
 package sql.repositories;
 
-import sql.SqlComponent;
+import sql.SqlRepository;
 import sql.SqlController;
 import sql.SqlParameter;
 import sql.components.Mechanic;
@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepairsHistoryRepository implements SqlComponent<String, Repair> {
+public class RepairsHistoryRepository implements SqlRepository<String, Repair> {
 
     private final String VIEW_NAME = "view_repairs_history";
 
@@ -81,14 +81,16 @@ public class RepairsHistoryRepository implements SqlComponent<String, Repair> {
     @Override
     public void insert(Repair repair) {
         SqlController controller = new SqlController("root", "Admin123");
-        controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP()");
+        controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP(), Cost=?",
+                new SqlParameter<Double>(repair.getCost()));
     }
 
     @Override
     public void insertAll(List<Repair> repairs) {
         SqlController controller = new SqlController("root", "Admin123");
         for (Repair repair : repairs) {
-            controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP()");
+            controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP(), Cost=?",
+                    new SqlParameter<Double>(repair.getCost()));
         }
     }
 
@@ -107,6 +109,7 @@ public class RepairsHistoryRepository implements SqlComponent<String, Repair> {
                 result.getTimestamp("EndTime"),
                 result.getString("RepairLocation"),
                 result.getString("Note"),
+                result.getDouble("Cost"),
                 mechanic
         );
     }

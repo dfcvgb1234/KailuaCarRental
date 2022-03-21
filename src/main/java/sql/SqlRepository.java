@@ -2,7 +2,7 @@ package sql;
 
 import java.util.List;
 
-public interface SqlComponent<Key, T> {
+public interface SqlRepository<Key, T> {
 
     T findFirstById(Key id);
     List<T> getAll();

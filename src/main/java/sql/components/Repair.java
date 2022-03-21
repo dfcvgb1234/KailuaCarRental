@@ -11,7 +11,16 @@ public class Repair {
     private Timestamp endTime;
     private String repairLocation;
     private String note;
+    private double cost;
     private Mechanic mechanic;
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
 
     public Car getCar() {
         return car;
@@ -49,7 +58,7 @@ public class Repair {
         return note;
     }
 
-    public void setNotes(String note) {
+    public void setNote(String note) {
         this.note = note;
     }
 
@@ -61,20 +70,22 @@ public class Repair {
         this.mechanic = mechanic;
     }
 
-    public Repair(Car car, Timestamp startTime, String repairLocation, String note, Mechanic mechanic) {
+    public Repair(Car car, Timestamp startTime, String repairLocation, String note, double cost, Mechanic mechanic) {
         this.car = car;
         this.startTime = startTime;
         this.repairLocation = repairLocation;
         this.note = note;
+        this.cost = cost;
         this.mechanic = mechanic;
     }
 
-    public Repair(Car car, Timestamp startTime, Timestamp endTime, String repairLocation, String note, Mechanic mechanic) {
+    public Repair(Car car, Timestamp startTime, Timestamp endTime, String repairLocation, String note, double cost, Mechanic mechanic) {
         this.car = car;
         this.startTime = startTime;
         this.endTime = endTime;
         this.repairLocation = repairLocation;
         this.note = note;
+        this.cost = cost;
         this.mechanic = mechanic;
     }
 }
