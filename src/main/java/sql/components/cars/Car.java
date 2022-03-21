@@ -1,6 +1,7 @@
 package sql.components.cars;
 
 import rest.DMRCar;
+import system.StringConverter;
 
 import java.util.ArrayList;
 import java.sql.Date;
@@ -73,9 +74,9 @@ public abstract class Car {
         this.brand = newCar.getMaerkeTypeNavn();
         this.model = newCar.getModelTypeNavn();
         this.variant = newCar.getVariantTypeNavn();
-        this.regDate = newCar.getFoersteRegistreringDato();
+        this.regDate = StringConverter.toDateFromDMRDate(newCar.getFoersteRegistreringDato());
         this.regNumber = newCar.getRegNr();
-        this.odometer = newCar.getMotorKilometerstand();
+        this.odometer = newCar.getMotorKilometerstand() * 1000;
         this.engineConfiguration = new Engine((int)newCar.getMotorSlagVolumen(), newCar.getMotorHestekraefter(), newCar.getDrivkraftTypeNavn());
         this.carFeatures = newCar.getKoeretoejUdstyrSamling();
         this.pricePerKilometer = pricePerKilometer;
@@ -87,7 +88,6 @@ public abstract class Car {
 
     public static class Builder {
 
-        private String registrationNumber;
         private String brand;
         private String model;
         private String variant;
@@ -98,10 +98,6 @@ public abstract class Car {
         private Engine engineConfiguration;
         private ArrayList<String> carFeatures;
 
-        public Builder setRegistrationNumber(String registrationNumber) {
-            this.registrationNumber = registrationNumber;
-            return this;
-        }
 
         public Builder setBrand(String brand) {
             this.brand = brand;

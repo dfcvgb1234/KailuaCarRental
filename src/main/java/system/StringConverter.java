@@ -1,8 +1,10 @@
 package system;
 
+import sql.components.RentalContract;
 import sql.components.cars.Car;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,9 +22,14 @@ public class StringConverter {
 
     }
 
-    public static Timestamp toTimestamp(String value, String format) {
+    public static Date toDateFromDMRDate(String value) {
+        String datePart = value.split("T")[0];
+        return toDate(datePart, "yyyy-MM-dd");
+    }
 
-        return Timestamp.valueOf(LocalDateTime.parse(value, DateTimeFormatter.ofPattern(format)));
+    public static Timestamp dateToTimestamp(Date value) {
+
+        return new Timestamp(value.getTime());
 
     }
 
@@ -30,6 +37,15 @@ public class StringConverter {
         ArrayList<String> values = new ArrayList<>();
         for (Car car : cars) {
             values.add(car.toString());
+        }
+
+        return values;
+    }
+
+    public static ArrayList<String> contractListToStringList(List<RentalContract> contracts) {
+        ArrayList<String> values = new ArrayList<>();
+        for (RentalContract contract : contracts) {
+            values.add(contract.toString());
         }
 
         return values;

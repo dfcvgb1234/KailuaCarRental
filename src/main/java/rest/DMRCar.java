@@ -8,11 +8,11 @@ public class DMRCar{
     private String regNr;
     private String stelNr;
     private String status;
-    private Date statusDato;
-    private Date foersteRegistreringDato;
+    private String statusDato;
+    private String foersteRegistreringDato;
     private boolean bilLeaset;
-    private Date leasingGyldigFra;
-    private Date leasingGyldigTil;
+    private String leasingGyldigFra;
+    private String leasingGyldigTil;
     private String leasingPeriode;
     private String foersteRegistreringDatoFormateret;
     private String koeretoejArtNavn;
@@ -74,7 +74,7 @@ public class DMRCar{
     private String adressePostNummerBy;
     private long koeretoejId;
     private String sekundaerStatus;
-    private Date sekundaerStatusDato;
+    private String sekundaerStatusDato;
 
     public String getRegNr() {
         return regNr;
@@ -88,11 +88,11 @@ public class DMRCar{
         return status;
     }
 
-    public Date getStatusDato() {
+    public String getStatusDato() {
         return statusDato;
     }
 
-    public Date getFoersteRegistreringDato() {
+    public String getFoersteRegistreringDato() {
         return foersteRegistreringDato;
     }
 
@@ -100,11 +100,11 @@ public class DMRCar{
         return bilLeaset;
     }
 
-    public Date getLeasingGyldigFra() {
+    public String getLeasingGyldigFra() {
         return leasingGyldigFra;
     }
 
-    public Date getLeasingGyldigTil() {
+    public String getLeasingGyldigTil() {
         return leasingGyldigTil;
     }
 
@@ -352,7 +352,7 @@ public class DMRCar{
         return sekundaerStatus;
     }
 
-    public Date getSekundaerStatusDato() {
+    public String getSekundaerStatusDato() {
         return sekundaerStatusDato;
     }
 }

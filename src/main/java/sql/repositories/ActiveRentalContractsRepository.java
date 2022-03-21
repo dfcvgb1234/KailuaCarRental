@@ -20,7 +20,7 @@ public class ActiveRentalContractsRepository implements SqlRepository<String, Re
     @Override
     public RentalContract findFirstById(String id) {
         SqlController controller = new SqlController("root", "Admin123");
-        ResultSet result = controller.performSQLSelect("SELECT * FROM " + TABLE_NAME + " WHERE Id = ?", new SqlParameter<String>(id));
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + TABLE_NAME + " WHERE CarId = ?", new SqlParameter<String>(id));
 
         try {
             if (result != null) {
@@ -81,11 +81,12 @@ public class ActiveRentalContractsRepository implements SqlRepository<String, Re
     @Override
     public void insert(RentalContract contract) {
         SqlController controller = new SqlController("root", "Admin123");
-        controller.performSQLUpdate("INSERT INTO " + TABLE_NAME + " VALUES (?,?,?,?,?)",
+        controller.performSQLUpdate("INSERT INTO " + TABLE_NAME + " VALUES (?,?,?,?,?,?)",
                 new SqlParameter<String>(contract.getCar().getRegNumber()),
                 new SqlParameter<Integer>(contract.getCustomer().getId()),
                 new SqlParameter<Timestamp>(contract.getStartDate()),
                 new SqlParameter<Timestamp>(contract.getEndDate()),
+                new SqlParameter<Double>(contract.getPrice()),
                 new SqlParameter<Integer>(contract.getKilometers()));
     }
 
@@ -94,11 +95,12 @@ public class ActiveRentalContractsRepository implements SqlRepository<String, Re
         SqlController controller = new SqlController("root", "Admin123");
 
         for (RentalContract contract : contracts) {
-            controller.performSQLUpdate("INSERT INTO " + TABLE_NAME + " VALUES (?,?,?,?,?)",
+            controller.performSQLUpdate("INSERT INTO " + TABLE_NAME + " VALUES (?,?,?,?,?,?)",
                     new SqlParameter<String>(contract.getCar().getRegNumber()),
                     new SqlParameter<Integer>(contract.getCustomer().getId()),
                     new SqlParameter<Timestamp>(contract.getStartDate()),
                     new SqlParameter<Timestamp>(contract.getEndDate()),
+                    new SqlParameter<Double>(contract.getPrice()),
                     new SqlParameter<Integer>(contract.getKilometers()));
         }
     }
@@ -113,7 +115,8 @@ public class ActiveRentalContractsRepository implements SqlRepository<String, Re
                 customer,
                 result.getTimestamp("StartTime"),
                 result.getTimestamp("EndTime"),
-                result.getInt("DrivenRange")
+                result.getInt("MaxRange"),
+                result.getDouble("Price")
         );
 
     }

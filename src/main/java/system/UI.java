@@ -14,7 +14,7 @@ public class UI {
     private final String SPLITLEFT_S = "╠═";
     private final String SPLITRIGHT_S = "═╣";
     private final String FLAT_S = "═";
-    private final String YESCANCEL_B = "[ 1: OK ]  [ 2: ANNULLER ]";
+    private final String YESCANCEL_B = "[ 1: OK ]  [ 2: CANCEL ]";
 
     public UI() {
     }
@@ -81,7 +81,7 @@ public class UI {
 
     }
 
-    public void showInfoBox(String message){
+    public void showActionBox(String message){
         String[] parts = message.split("\n");
         String[] parts2 = message.split("\n");
         List<String> partssorted = Arrays.asList(parts);
@@ -132,6 +132,57 @@ public class UI {
         System.out.println(output);
 
         System.out.print("Please select an option: ");
+    }
+
+    public void showInfoBox(String message){
+        String[] parts = message.split("\n");
+        String[] parts2 = message.split("\n");
+        List<String> partssorted = Arrays.asList(parts);
+        partssorted.sort(Comparator.comparing(String::length));
+        int sizeX = partssorted.get(partssorted.size()-1).length();
+        int sizeY = partssorted.size();
+        if(sizeX<5){
+            sizeX=5;
+        }
+        String output;
+
+        //Start with top line
+        output = (TOPLEFT_S);
+        for(int i=0;i<sizeX;i++){
+            output+=FLAT_S;
+        }
+        output += (TOPRIGHT_S+"\n"+SIDELEFT_S);
+
+        //Create empty line
+        for(int i=0;i<sizeX;i++){
+            output+=" ";
+        }
+        output += (SIDERIGHT_S+"\n");
+
+        //Create text
+        for(int i =0;i<sizeY;i++){
+            output += (SIDELEFT_S+parts2[i]);
+            for(int j=0;j<(sizeX-parts2[i].length());j++){
+                output+=" ";
+            }
+            output+=SIDERIGHT_S+"\n";
+        }
+
+        //Create empty line
+        output+=SIDELEFT_S;
+        for(int i=0;i<sizeX;i++){
+            output+=" ";
+        }
+        output += (SIDERIGHT_S+"\n");
+
+        //Create bottom line
+        output += (BOTTOMLEFT_S);
+        for(int i=0;i<sizeX;i++){
+            output+=FLAT_S;
+        }
+        output += (BOTTOMRIGHT_S);
+
+        System.out.println(output);
     }
 
     public boolean showYesNoDialogBox(String message, Scanner input){
@@ -187,17 +238,16 @@ public class UI {
 
         System.out.println(output);
         System.out.print("Please select an option: ");
-        String inputChar = input.nextLine();
-        if(inputChar=="1"){
-            return true;
-        }else if(inputChar=="2"){
-            return false;
-        }else if(inputChar==""){
-            System.out.println("IT WORKS");
-            return true;
-        }else{
-            System.out.println("Ugyldigt input, venligst skriv en af de angivne muligheder.\n");
-            return showYesNoDialogBox(message, input);
+        switch (input.nextLine()) {
+            case "1":
+                return true;
+            case "2":
+                return false;
+            case "":
+                return true;
+            default:
+                System.out.println("Ugyldigt input, venligst skriv en af de angivne muligheder.\n");
+                return showYesNoDialogBox(message, input);
         }
     }
 }

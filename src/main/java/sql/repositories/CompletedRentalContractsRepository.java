@@ -80,9 +80,10 @@ public class CompletedRentalContractsRepository implements SqlRepository<Integer
     @Override
     public void insert(RentalContract contract) {
         SqlController controller = new SqlController("root", "Admin123");
-        controller.performSQLUpdate("CALL sp_CompleteRental(?,?)",
+        controller.performSQLUpdate("CALL sp_CompleteRental(?,?,?)",
                 new SqlParameter<String>(contract.getCar().getRegNumber()),
-                new SqlParameter<Integer>(contract.getKilometers()));
+                new SqlParameter<Integer>(contract.getKilometers()),
+                new SqlParameter<Double>(contract.getPrice()));
     }
 
     @Override
@@ -90,9 +91,10 @@ public class CompletedRentalContractsRepository implements SqlRepository<Integer
         SqlController controller = new SqlController("root", "Admin123");
 
         for (RentalContract contract : contracts) {
-            controller.performSQLUpdate("CALL sp_CompleteRental(?,?)",
+            controller.performSQLUpdate("CALL sp_CompleteRental(?,?,?)",
                     new SqlParameter<String>(contract.getCar().getRegNumber()),
-                    new SqlParameter<Integer>(contract.getKilometers()));
+                    new SqlParameter<Integer>(contract.getKilometers()),
+                    new SqlParameter<Double>(contract.getPrice()));
         }
     }
 
@@ -107,8 +109,8 @@ public class CompletedRentalContractsRepository implements SqlRepository<Integer
                 customer,
                 result.getTimestamp("StartTime"),
                 result.getTimestamp("EndTime"),
-                result.getInt("DrivenRange")
+                result.getInt("DrivenRange"),
+                result.getDouble("Price")
         );
-
     }
 }

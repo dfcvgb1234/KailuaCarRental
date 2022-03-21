@@ -57,4 +57,22 @@ public class RentalContract {
     public void setKilometers(int kilometers) {
         this.kilometers = kilometers;
     }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer: "+customer.getName() + "\n"+
+        "Car: " + car.getRegNumber() + "\n" +
+        "Pickup date: " + startDate + "\n" +
+        "Return date: " + endDate + "\n" +
+        "Max kilometers: " + kilometers + "\n" +
+        "Calculated price: " + price;
+    }
 }

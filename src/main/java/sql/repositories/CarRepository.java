@@ -101,7 +101,7 @@ public class CarRepository implements SqlRepository<String, Car> {
 
     public List<Car> getAllCarsOfType(String carType) {
         SqlController controller = new SqlController("root", "Admin123");
-        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE CarType = carType");
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE CarType = ?", new SqlParameter<String>(carType));
 
         List<Car> cars = new ArrayList<>();
         try {
@@ -121,27 +121,29 @@ public class CarRepository implements SqlRepository<String, Car> {
     @Override
     public void insert(Car car) {
         SqlController controller = new SqlController("root", "Admin123");
-        controller.performSQLUpdate("CALL sp_InsertOrUpdateCar(?,?,?,?,?,?,?,?,?,?,?)",
-                new SqlParameter<String>(car.getRegNumber()),
-                new SqlParameter<String>(getCarType(car)),
-                new SqlParameter<String>(car.getBrand()),
-                new SqlParameter<String>(car.getModel()),
-                new SqlParameter<String>(car.getVariant()),
-                new SqlParameter<Integer>(car.getEngineConfiguration().getEngineSize()),
-                new SqlParameter<Integer>(car.getEngineConfiguration().getEnginePower()),
-                new SqlParameter<String>(car.getEngineConfiguration().getFuelType()),
-                new SqlParameter<Date>(car.getRegDate()),
-                new SqlParameter<Integer>(car.getOdometer()),
-                new SqlParameter<String>(car.getSerializedCarFeatures()));
+        controller.performSQLUpdate("CALL sp_InsertOrUpdateCar(?,?,?,?,?,?,?,?,?,?,?,?)",
+                new SqlParameter<String>(car.getRegNumber()), // AK49577
+                new SqlParameter<String>(getCarType(car)),  // Luxury Car
+                new SqlParameter<Double>(car.getPricePerKilometer()), // 5.8
+                new SqlParameter<String>(car.getBrand()), // Audi
+                new SqlParameter<String>(car.getModel()), // A3
+                new SqlParameter<String>(car.getVariant()), // TSI
+                new SqlParameter<Integer>(car.getEngineConfiguration().getEngineSize()), // 2000
+                new SqlParameter<Integer>(car.getEngineConfiguration().getEnginePower()), // 170
+                new SqlParameter<String>(car.getEngineConfiguration().getFuelType()), // Diesel
+                new SqlParameter<Date>(car.getRegDate()), // STR_TO_DATE('03-05-2019', '%d-%m-%Y')
+                new SqlParameter<Integer>(car.getOdometer()), // 25000
+                new SqlParameter<String>(car.getSerializedCarFeatures())); // Leather seats, heated steering wheel
     }
 
     @Override
     public void insertAll(List<Car> cars) {
         SqlController controller = new SqlController("root", "Admin123");
         for (Car car : cars) {
-            controller.performSQLUpdate("CALL sp_InsertOrUpdateCar(?,?,?,?,?,?,?,?,?,?,?)",
+            controller.performSQLUpdate("CALL sp_InsertOrUpdateCar(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     new SqlParameter<String>(car.getRegNumber()),
                     new SqlParameter<String>(getCarType(car)),
+                    new SqlParameter<Double>(car.getPricePerKilometer()),
                     new SqlParameter<String>(car.getBrand()),
                     new SqlParameter<String>(car.getModel()),
                     new SqlParameter<String>(car.getVariant()),
@@ -168,10 +170,11 @@ public class CarRepository implements SqlRepository<String, Car> {
 
         Car.Builder carBuilder = new Car.Builder();
 
-        carBuilder.setRegistrationNumber(result.getString("RegistrationNumber"));
+        carBuilder.setRegNumber(result.getString("RegistrationNumber"));
         carBuilder.setBrand(result.getString("Brand"));
         carBuilder.setModel(result.getString("Model"));
         carBuilder.setVariant(result.getString("Variant"));
+        carBuilder.setPricePerKilometer(result.getDouble("PricePerKilometer"));
 
         String engineSpecs = result.getString("EngineSpecs");
         int engineSize = Integer.parseInt(engineSpecs.split(",")[0].trim());

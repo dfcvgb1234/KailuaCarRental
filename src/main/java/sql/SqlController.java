@@ -22,13 +22,13 @@ public class SqlController {
             s = con.prepareStatement(sql);
             for (int i = 0; i < parameters.length; i++) {
                 switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {
-                    case "integer" -> s.setInt(i, (int) parameters[i].getValue());
-                    case "string" -> s.setString(i, (String) parameters[i].getValue());
-                    case "double" -> s.setDouble(i, (Double) parameters[i].getValue());
-                    case "boolean" -> s.setBoolean(i, (Boolean) parameters[i].getValue());
-                    case "date" -> s.setDate(i, (Date) parameters[i].getValue());
-                    case "timestamp" -> s.setTimestamp(i, (Timestamp) parameters[i].getValue());
-                    default -> s.setString(i, parameters[i].getValue().toString());
+                    case "integer" -> s.setInt(i+1, (int) parameters[i].getValue());
+                    case "string" -> s.setString(i+1, (String) parameters[i].getValue());
+                    case "double" -> s.setDouble(i+1, (Double) parameters[i].getValue());
+                    case "boolean" -> s.setBoolean(i+1, (Boolean) parameters[i].getValue());
+                    case "date" -> s.setDate(i+1, (Date) parameters[i].getValue());
+                    case "timestamp" -> s.setTimestamp(i+1, (Timestamp) parameters[i].getValue());
+                    default -> s.setString(i+1, parameters[i].getValue().toString());
                 }
             }
             return s.executeQuery();
@@ -44,17 +44,32 @@ public class SqlController {
         try {
             s = con.prepareStatement(sql);
             for (int i = 0; i < parameters.length; i++) {
-                switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {
-                    case "integer" -> s.setInt(i, (int) parameters[i].getValue());
-                    case "string" -> s.setString(i, (String) parameters[i].getValue());
-                    case "double" -> s.setDouble(i, (Double) parameters[i].getValue());
-                    case "boolean" -> s.setBoolean(i, (Boolean) parameters[i].getValue());
-                    case "date" -> s.setDate(i, (Date) parameters[i].getValue());
-                    case "timestamp" -> s.setTimestamp(i, (Timestamp) parameters[i].getValue());
-                    default -> s.setString(i, parameters[i].getValue().toString());
+                if (parameters[i].getValue() != null) {
+                    switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {
+                        case "integer" -> s.setInt(i+1, (int) parameters[i].getValue());
+                        case "string" -> s.setString(i+1, (String) parameters[i].getValue());
+                        case "double" -> s.setDouble(i+1, (Double) parameters[i].getValue());
+                        case "boolean" -> s.setBoolean(i+1, (Boolean) parameters[i].getValue());
+                        case "date" -> s.setDate(i+1, (Date) parameters[i].getValue());
+                        case "timestamp" -> s.setTimestamp(i+1, (Timestamp) parameters[i].getValue());
+                        default -> s.setString(i+1, parameters[i].getValue().toString());
+                    }
+                }
+                else {
+                    s.setNull(i+1, 0);
                 }
             }
             s.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void test(String sql) {
+        Connection con = getConnection();
+        try {
+            Statement s = con.createStatement();
+            s.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
