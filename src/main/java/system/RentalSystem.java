@@ -84,10 +84,12 @@ public class RentalSystem {
         ui.showActionBox("CAR MENU:\n" +
                 "1: Add/Change car\n" +
                 "2: Remove car\n" +
-                "3: Back");
+                "3: View car overview\n" +
+                "4: Back");
         switch (Integer.parseInt(input.nextLine())) {
             case 1 -> addCar(input);
             case 2 -> removeCar(input);
+            case 3 -> viewCars(input);
         }
     }
 
@@ -182,51 +184,69 @@ public class RentalSystem {
 
     private Customer getCustomer(Scanner input) {
         Customer customer = null;
-        while (customer == null) {
-            System.out.println("What is the customers phone number? (Remember country code, eg. +45)");
-            System.out.print("Enter Phone: ");
-            String phoneNumber = input.nextLine();
+        System.out.println("What is the customers phone number? (Remember country code, eg. +45)");
+        System.out.print("Enter Phone: ");
+        String phoneNumber = input.nextLine();
 
-            customer = new CustomerRepository().findFirstByPhonenumber(phoneNumber);
+        customer = new CustomerRepository().findFirstByPhonenumber(phoneNumber);
 
-            if (customer == null) {
-                if (ui.showYesNoDialogBox("Customer not found\nDo you wish to create them?", input)) {
-                    customer = createCustomer(input);
+        if (customer == null) {
+            if (ui.showYesNoDialogBox("Customer not found\nDo you wish to create them?", input)) {
+                customer = createCustomer(input);
+
+                if (customer != null) {
                     new CustomerRepository().insert(customer);
                 }
             }
-            else {
-                if (!ui.showYesNoDialogBox("Found this customer: \n\n" +
-                        "Name: " + customer.getName() + "\n" +
-                        "Address: " + customer.getAddress() + "\n" +
-                        "Email: " + customer.getEmail() + "\n\n" +
-                        "Is this correct?", input)) {
-                    customer = null;
-                }
+        }
+        else {
+            if (!ui.showYesNoDialogBox("Found this customer: \n\n" +
+                    "Name: " + customer.getName() + "\n" +
+                    "Address: " + customer.getAddress() + "\n" +
+                    "Email: " + customer.getEmail() + "\n\n" +
+                    "Is this correct?", input)) {
+                customer = null;
             }
         }
+
         return customer;
     }
 
     private Car getCar(Scanner input) {
+
         Car car = null;
-        while (car == null) {
+        boolean exit = false;
+        while (!exit) {
             System.out.println("What is the cars Registration number:");
             System.out.print("Enter RegistrationNumber: ");
             String registrationNumber = input.nextLine();
 
-            car = new CarRepository().findFirstAvailableCarById(registrationNumber);
+            car = new CarRepository().findFirstAvailableById(registrationNumber);
 
             if (car == null) {
-                System.out.println("Car not found or available, please try again..");
+                exit = !ui.showYesNoDialogBox("Car not found or available\n\nDo you wish to make another search?", input);
+            }
+            else {
+                exit = true;
             }
         }
 
         return car;
     }
 
-    private void viewAllAvailableCars(Scanner input) {
-        System.out.print("What type of car would the customer like?\n1: Family\n2: Luxury\n3: Sport\n\nEnter an option: ");
+    private void viewCars(Scanner input) {
+        ui.showActionBox("Get an overview of all cars\n\n" +
+                "1: View available cars\n" +
+                "2: View all cars");
+
+        switch (Integer.parseInt(input.nextLine())) {
+            case 1 -> viewAllAvailableCars(input);
+            case 2 -> viewAllCars(input);
+        }
+    }
+
+    private void viewAllCars(Scanner input) {
+        ui.showActionBox("What type of car would you like?\n1: Family\n2: Luxury\n3: Sport\n4: All");
         switch (input.nextLine().toLowerCase()) {
             case "1", "family":
                 List<Car> familyCars = new CarRepository().getAllCarsOfType("Family Car");
@@ -241,6 +261,35 @@ public class RentalSystem {
             case "3", "sport":
                 List<Car> sportsCars = new CarRepository().getAllCarsOfType("Sports Car");
                 ui.showMultipleInfoBox(StringConverter.carListToStringList(sportsCars));
+                break;
+
+            case "4", "All":
+                List<Car> allCars = new CarRepository().getAll();
+                ui.showMultipleInfoBox(StringConverter.carListToStringList(allCars));
+        }
+    }
+
+    private void viewAllAvailableCars(Scanner input) {
+        ui.showActionBox("What type of car would you like?\n1: Family\n2: Luxury\n3: Sport\n4: All");
+        switch (input.nextLine().toLowerCase()) {
+            case "1", "family":
+                List<Car> familyCars = new CarRepository().getAllAvailableCarsOfType("Family Car");
+                ui.showMultipleInfoBox(StringConverter.carListToStringList(familyCars));
+                break;
+
+            case "2", "luxury":
+                List<Car> luxuryCars = new CarRepository().getAllAvailableCarsOfType("Luxury Car");
+                ui.showMultipleInfoBox(StringConverter.carListToStringList(luxuryCars));
+                break;
+
+            case "3", "sport":
+                List<Car> sportsCars = new CarRepository().getAllAvailableCarsOfType("Sports Car");
+                ui.showMultipleInfoBox(StringConverter.carListToStringList(sportsCars));
+                break;
+
+            case "4", "All":
+                List<Car> allCars = new CarRepository().getAllAvailableCars();
+                ui.showMultipleInfoBox(StringConverter.carListToStringList(allCars));
                 break;
         }
     }
@@ -297,9 +346,9 @@ public class RentalSystem {
         ui.showMultipleInfoBox(StringConverter.contractListToStringList(contracts));
 
         ui.showActionBox("What action do you wish to perform?\n\n" +
-                "1. Complete Rental\n" +
-                "2. Create Rental\n" +
-                "3. Back");
+                "1: Complete Rental\n" +
+                "2: Create Rental\n" +
+                "3: Back");
 
         switch (Integer.parseInt(input.nextLine())) {
             case 1 -> completeRental(input);
@@ -340,9 +389,88 @@ public class RentalSystem {
     }
 
     public void viewRentalArchive(Scanner input){
+        ui.showActionBox("Rental Archive\n\n" +
+                "1: Show the last amount completed rentals\n" +
+                "2: Show all completed rentals with a specific car\n" +
+                "3: Show all rentals from a specific start date\n" +
+                "4: Show all completed rentals");
+
+        switch (Integer.parseInt(input.nextLine())) {
+            case 1 -> viewRentalArchiveShowTop(input);
+            case 2 -> viewRentalArchiveFromCars(input);
+            case 3 -> viewRentalArchiveFromStartDate(input);
+            case 4 -> viewAllArchivedRentals(input);
+        }
+    }
+
+    private void viewAllArchivedRentals(Scanner input) {
+        ui.showInfoBox("View all archived rentals\n\n" +
+                "Warning this may take a long time to load!");
+
+        if (ui.showYesNoDialogBox("Are you sure you wish to continue?", input)) {
+
+            List<RentalContract> contracts = new CompletedRentalContractsRepository().getAll();
+            ui.showMultipleInfoBox(StringConverter.contractListToStringList(contracts));
+            showRentalContractSummary(contracts);
+
+        }
+    }
+
+    private void viewRentalArchiveFromStartDate(Scanner input) {
+        ui.showInfoBox("Show all rentals started on a specific date");
+
+        System.out.println("Please enter the start date in the following format: DD-MM-YYYY");
+        System.out.print("Date: ");
+        Timestamp startDate = StringConverter.dateToTimestamp(StringConverter.toDate(input.nextLine(), "dd-MM-yyyy"));
+
+        List<RentalContract> contracts = new CompletedRentalContractsRepository().getAllOnSpecificDate(startDate);
+        ui.showMultipleInfoBox(StringConverter.contractListToStringList(contracts));
+        showRentalContractSummary(contracts);
+    }
+
+    private void viewRentalArchiveShowTop(Scanner input) {
+        ui.showInfoBox("Show a selected amount of completed rentals");
+
+        System.out.println("Please specify how many contracts you wish to see: ");
+        System.out.print("Amount: ");
+        int amount = Integer.parseInt(input.nextLine());
+
+        List<RentalContract> contracts = new CompletedRentalContractsRepository().getAmount(amount);
+        ui.showMultipleInfoBox(StringConverter.contractListToStringList(contracts));
+        showRentalContractSummary(contracts);
+    }
+
+    private void viewRentalArchiveFromCars(Scanner input) {
+        ui.showInfoBox("Show all completed rentals with a specific vehicle");
+
+        System.out.println("Please enter registration number of vehicle");
+        System.out.print("Enter registration number: ");
+        String regNumber = input.nextLine();
+
+        List<RentalContract> contracts = new CompletedRentalContractsRepository().getAllWithCarId(regNumber);
+        ui.showMultipleInfoBox(StringConverter.contractListToStringList(contracts));
+        showRentalContractSummary(contracts);
+    }
+
+    private void showRentalContractSummary(List<RentalContract> contracts) {
+
+        double totalPrice = 0;
+        int totalKilometersDriven = 0;
+
+        for (RentalContract contract : contracts) {
+            totalPrice += contract.getPrice();
+            totalKilometersDriven += contract.getKilometers();
+        }
+
+        ui.showInfoBox("Summary\n\n" +
+                "Total income: " + totalPrice + "\n" +
+                "Total kilometers driven: " + totalKilometersDriven);
 
     }
+
     public Customer createCustomer(Scanner input){
+        ui.showInfoBox("Create a customer");
+
         return null;
     }
 
@@ -350,7 +478,33 @@ public class RentalSystem {
 
     }
     public void removeCar(Scanner input){
+        ui.showInfoBox("Remove a car from the database");
 
+        String regNumber = "";
+        Car car = null;
+        while (car == null) {
+            System.out.println("Please enter the registration number for the car to be removed");
+            System.out.print("Registration number: ");
+            regNumber = input.nextLine();
+
+            car = new CarRepository().findFirstAvailableById(regNumber);
+            if (car == null) {
+                if (!ui.showYesNoDialogBox("Car not found in database or is not available\nWould you like to make another search?", input)) {
+                    return;
+                }
+            }
+        }
+
+        if (ui.showYesNoDialogBox("Car found!\n\n" +
+                "Car Brand: " + car.getBrand() + "\n" +
+                "Car Model: " + car.getModel() + "\n" +
+                "Car Variant: " + car.getVariant() + "\n\n" +
+                "Is this correct?", input)) {
+
+            if (ui.showYesNoDialogBox("Are you sure you wish to remove this car from the database?", input)) {
+                new CarRepository().deleteOnId(regNumber);
+            }
+        }
     }
     public void scheduleRepair(Scanner input){
 

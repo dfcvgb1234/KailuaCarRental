@@ -72,7 +72,7 @@ public class RentalContract {
         "Car: " + car.getRegNumber() + "\n" +
         "Pickup date: " + startDate + "\n" +
         "Return date: " + endDate + "\n" +
-        "Max kilometers: " + kilometers + "\n" +
-        "Calculated price: " + price;
+        "Kilometers: " + kilometers + "\n" +
+        "Price: " + price;
     }
 }

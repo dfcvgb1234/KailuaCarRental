@@ -15,6 +15,8 @@ import java.util.List;
 public class CarRepository implements SqlRepository<String, Car> {
 
     private final String VIEW_NAME = "view_cars";
+    private final String VIEW_NAME_AVAILABLE = "view_available_cars";
+    private final String TABLE_NAME = "cars";
 
     @Override
     public Car findFirstById(String id) {
@@ -38,9 +40,9 @@ public class CarRepository implements SqlRepository<String, Car> {
         return null;
     }
 
-    public Car findFirstAvailableCarById(String id) {
+    public Car findFirstAvailableById(String id) {
         SqlController controller = new SqlController("root", "Admin123");
-        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE RegistrationNumber = ?", new SqlParameter<String>(id));
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME_AVAILABLE + " WHERE RegistrationNumber = ?", new SqlParameter<String>(id));
 
         try {
             if (result != null) {
@@ -118,6 +120,44 @@ public class CarRepository implements SqlRepository<String, Car> {
         return cars;
     }
 
+    public List<Car> getAllAvailableCarsOfType(String carType) {
+        SqlController controller = new SqlController("root", "Admin123");
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME_AVAILABLE + " WHERE CarType = ?", new SqlParameter<String>(carType));
+
+        List<Car> cars = new ArrayList<>();
+        try {
+            if (result != null) {
+                while (result.next()) {
+                    cars.add(getCarFromResultSet(result));
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cars;
+    }
+
+    public List<Car> getAllAvailableCars() {
+        SqlController controller = new SqlController("root", "Admin123");
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME_AVAILABLE);
+
+        List<Car> cars = new ArrayList<>();
+        try {
+            if (result != null) {
+                while (result.next()) {
+                    cars.add(getCarFromResultSet(result));
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cars;
+    }
+
     @Override
     public void insert(Car car) {
         SqlController controller = new SqlController("root", "Admin123");
@@ -154,6 +194,12 @@ public class CarRepository implements SqlRepository<String, Car> {
                     new SqlParameter<Integer>(car.getOdometer()),
                     new SqlParameter<String>(car.getSerializedCarFeatures()));
         }
+    }
+
+    @Override
+    public void deleteOnId(String id) {
+        SqlController controller = new SqlController("root", "Admin123");
+        controller.performSQLUpdate("UPDATE " + TABLE_NAME +" SET StopCode = true WHERE RegistrationNumber = ?", new SqlParameter<String>(id));
     }
 
     private String getCarType (Car car) {
@@ -194,4 +240,6 @@ public class CarRepository implements SqlRepository<String, Car> {
             default -> null;
         };
     }
+
+
 }

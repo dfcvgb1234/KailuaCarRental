@@ -11,4 +11,6 @@ public interface SqlRepository<Key, T> {
     void insert(T component);
     void insertAll(List<T> components);
 
+    void deleteOnId(Key id);
+
 }

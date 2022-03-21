@@ -105,6 +105,12 @@ public class ActiveRentalContractsRepository implements SqlRepository<String, Re
         }
     }
 
+    @Override
+    public void deleteOnId(String id) {
+        SqlController controller = new SqlController("root", "Admin123");
+        controller.performSQLUpdate("DELETE FROM " + TABLE_NAME + " WHERE CarId = ?", new SqlParameter<String>(id));
+    }
+
     private RentalContract getRentalContractFromResultSet(ResultSet result) throws SQLException {
 
         Car rentalCar = new CarRepository().findFirstById(result.getString("CarId"));

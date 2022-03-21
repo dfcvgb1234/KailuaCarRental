@@ -12,14 +12,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepairsHistoryRepository implements SqlRepository<String, Repair> {
+public class RepairsHistoryRepository implements SqlRepository<Integer, Repair> {
 
     private final String VIEW_NAME = "view_repairs_history";
+    private final String TABLE_NAME = "repairs";
 
     @Override
-    public Repair findFirstById(String id) {
+    public Repair findFirstById(Integer id) {
         SqlController controller = new SqlController("root", "Admin123");
-        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE CarId = ?", new SqlParameter<String>(id));
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE CarId = ?", new SqlParameter<Integer>(id));
 
         try {
             if (result != null) {
@@ -81,17 +82,25 @@ public class RepairsHistoryRepository implements SqlRepository<String, Repair> {
     @Override
     public void insert(Repair repair) {
         SqlController controller = new SqlController("root", "Admin123");
-        controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP(), Cost=?",
-                new SqlParameter<Double>(repair.getCost()));
+        controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP(), Cost=? WHERE Id = ?",
+                new SqlParameter<Double>(repair.getCost()),
+                new SqlParameter<Integer>(repair.getId()));
     }
 
     @Override
     public void insertAll(List<Repair> repairs) {
         SqlController controller = new SqlController("root", "Admin123");
         for (Repair repair : repairs) {
-            controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP(), Cost=?",
-                    new SqlParameter<Double>(repair.getCost()));
+            controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP(), Cost=? WHERE Id = ?",
+                    new SqlParameter<Double>(repair.getCost()),
+                    new SqlParameter<Integer>(repair.getId()));
         }
+    }
+
+    @Override
+    public void deleteOnId(Integer id) {
+        SqlController controller = new SqlController("root", "Admin123");
+        controller.performSQLUpdate("DELETE FROM " + TABLE_NAME + " WHERE CarId = ?", new SqlParameter<Integer>(id));
     }
 
     private Repair getRepairFromResultSet(ResultSet result) throws SQLException {
@@ -104,6 +113,7 @@ public class RepairsHistoryRepository implements SqlRepository<String, Repair> {
         );
 
         return new Repair(
+                result.getInt("Id"),
                 car,
                 result.getTimestamp("StartTime"),
                 result.getTimestamp("EndTime"),

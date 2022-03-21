@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 public class Repair {
 
+    private int Id;
     private Car car;
     private Timestamp startTime;
     private Timestamp endTime;
@@ -70,7 +71,11 @@ public class Repair {
         this.mechanic = mechanic;
     }
 
-    public Repair(Car car, Timestamp startTime, String repairLocation, String note, double cost, Mechanic mechanic) {
+    public int getId() {
+        return Id;
+    }
+
+    public Repair(int id, Car car, Timestamp startTime, String repairLocation, String note, double cost, Mechanic mechanic) {
         this.car = car;
         this.startTime = startTime;
         this.repairLocation = repairLocation;
@@ -79,7 +84,7 @@ public class Repair {
         this.mechanic = mechanic;
     }
 
-    public Repair(Car car, Timestamp startTime, Timestamp endTime, String repairLocation, String note, double cost, Mechanic mechanic) {
+    public Repair(int id, Car car, Timestamp startTime, Timestamp endTime, String repairLocation, String note, double cost, Mechanic mechanic) {
         this.car = car;
         this.startTime = startTime;
         this.endTime = endTime;

@@ -9,6 +9,7 @@ import sql.components.customers.Customer;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,10 +58,50 @@ public class CompletedRentalContractsRepository implements SqlRepository<Integer
         return contracts;
     }
 
+    public List<RentalContract> getAllWithCarId(String carId) {
+        SqlController controller = new SqlController("root", "Admin123");
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + TABLE_NAME + " WHERE CarId = ?", new SqlParameter<String>(carId));
+
+        List<RentalContract> contracts = new ArrayList<>();
+        try {
+            if (result != null) {
+                while (result.next()) {
+                    contracts.add(getRentalContractFromResultSet(result));
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return contracts;
+    }
+
+    public List<RentalContract> getAllOnSpecificDate(Timestamp date) {
+        SqlController controller = new SqlController("root", "Admin123");
+        ResultSet result = controller.performSQLSelect("SELECT * FROM car_rental_db.completed_rental_contracts WHERE StartTime BETWEEN ? AND DATE_ADD(?, INTERVAL 1 DAY)",
+                new SqlParameter<Timestamp>(date),
+                new SqlParameter<Timestamp>(date));
+
+        List<RentalContract> contracts = new ArrayList<>();
+        try {
+            if (result != null) {
+                while (result.next()) {
+                    contracts.add(getRentalContractFromResultSet(result));
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return contracts;
+    }
+
     @Override
     public List<RentalContract> getAmount(int amount) {
         SqlController controller = new SqlController("root", "Admin123");
-        ResultSet result = controller.performSQLSelect("SELECT * FROM " + TABLE_NAME + " LIMIT = ?", new SqlParameter<Integer>(amount));
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + TABLE_NAME + " LIMIT ?", new SqlParameter<Integer>(amount));
 
         List<RentalContract> contracts = new ArrayList<>();
         try {
@@ -96,6 +137,12 @@ public class CompletedRentalContractsRepository implements SqlRepository<Integer
                     new SqlParameter<Integer>(contract.getKilometers()),
                     new SqlParameter<Double>(contract.getPrice()));
         }
+    }
+
+    @Override
+    public void deleteOnId(Integer id) {
+        SqlController controller = new SqlController("root", "Admin123");
+        controller.performSQLUpdate("DELETE FROM " + TABLE_NAME + " WHERE Id = ?", new SqlParameter<Integer>(id));
     }
 
     private RentalContract getRentalContractFromResultSet(ResultSet result) throws SQLException {

@@ -15,6 +15,7 @@ import java.util.List;
 public class CustomerRepository implements SqlRepository<Integer, Customer> {
 
     private final String VIEW_NAME = "view_customers";
+    private final String TABLE_NAME = "customers";
 
     @Override
     public Customer findFirstById(Integer id) {
@@ -129,6 +130,12 @@ public class CustomerRepository implements SqlRepository<Integer, Customer> {
                     new SqlParameter<Date>(license.getBirthday()),
                     new SqlParameter<String>(license.getCountryOfOrigin()));
         }
+    }
+
+    @Override
+    public void deleteOnId(Integer id) {
+        SqlController controller = new SqlController("root", "Admin123");
+        controller.performSQLUpdate("DELETE FROM " + TABLE_NAME + " WHERE Id = ?", new SqlParameter<Integer>(id));
     }
 
     public Customer findFirstByPhonenumber(String phonenumber) {

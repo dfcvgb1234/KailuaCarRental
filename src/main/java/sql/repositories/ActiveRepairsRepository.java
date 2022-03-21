@@ -12,14 +12,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActiveRepairsRepository implements SqlRepository<String, Repair> {
+public class ActiveRepairsRepository implements SqlRepository<Integer, Repair> {
 
     private final String VIEW_NAME = "view_active_repairs";
+    private final String TABLE_NAME = "repairs";
 
     @Override
-    public Repair findFirstById(String id) {
+    public Repair findFirstById(Integer id) {
         SqlController controller = new SqlController("root", "Admin123");
-        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE CarId = ?", new SqlParameter<String>(id));
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE Id = ?", new SqlParameter<Integer>(id));
 
         try {
             if (result != null) {
@@ -120,6 +121,12 @@ public class ActiveRepairsRepository implements SqlRepository<String, Repair> {
         }
     }
 
+    @Override
+    public void deleteOnId(Integer id) {
+        SqlController controller = new SqlController("root", "Admin123");
+        controller.performSQLUpdate("DELETE FROM " + TABLE_NAME + " WHERE Id = ?", new SqlParameter<Integer>(id));
+    }
+
     private Repair getRepairFromResultSet(ResultSet result) throws SQLException {
 
         Car car = new CarRepository().findFirstById(result.getString("CarId"));
@@ -130,6 +137,7 @@ public class ActiveRepairsRepository implements SqlRepository<String, Repair> {
         );
 
         return new Repair(
+                result.getInt("Id"),
                 car,
                 result.getTimestamp("StartTime"),
                 result.getString("RepairLocation"),
