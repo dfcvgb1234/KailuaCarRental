@@ -314,23 +314,26 @@ public class RentalSystem {
                         "Car Variant: " + car.getVariantTypeNavn() + "\n\n" +
                         "Is this correct?", input)) {
 
+                    System.out.println("Please enter the price per kilometer for the car");
+                    System.out.print("Price per kilometer: ");
+                    double pricePerKilometer = Double.parseDouble(input.nextLine());
+
                     System.out.println("Please enter car type (Luxury Car, Familiy Car, Sports Car)");
                     System.out.print("Car Type: ");
                     String carType = input.nextLine();
-
-                    System.out.println("Please enter the price per kilometer for the car");
-                    System.out.print("Price per kilometer: ");
-                    double pricePerKilometer = input.nextDouble();
 
                     switch (carType.toLowerCase()) {
                         case "luxury car" -> newCar = new LuxuryCar(car, pricePerKilometer);
                         case "family car" -> newCar = new FamilyCar(car, pricePerKilometer);
                         case "sports car" -> newCar = new SportsCar(car, pricePerKilometer);
+                        default -> System.out.println("Not a valid car type, please try again");
                     }
                 }
             }
             else {
-                System.out.println("Car not found in DMR, please try again");
+                if (!ui.showYesNoDialogBox("Car not found in DMR, would you like to make another search", input)) {
+                    return;
+                }
             }
         }
         System.out.println();

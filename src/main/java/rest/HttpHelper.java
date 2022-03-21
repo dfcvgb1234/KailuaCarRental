@@ -21,12 +21,20 @@ public class HttpHelper {
 
     public DMRCar getDMRCar(String regNumber) {
 
+        try {
             String response = performGetRequest("https://www.tjekbil.dk/api/v3/dmr/regnrquery/" + regNumber);
 
             Gson gson = new GsonBuilder().create();
             List<DMRCar> cars = gson.fromJson(response, new TypeToken<List<DMRCar>>(){}.getType());
 
             return cars.get(0);
+        }
+        catch (Exception ex) {
+
+        }
+
+        return null;
+
     }
 
     public String performGetRequest(String url) {
