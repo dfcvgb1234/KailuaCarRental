@@ -41,20 +41,13 @@ public class UI {
 
         //The tricky one - One solid box split by lines containing the different entries
         for(int k=0;k<list.size();k++) { //Loop through all entries in array
-
-            //This seems redundant. Double check code to see if partsorted2.size can be replaced with
-            //parts.length, and parts2[i].length can be replaced with parts[i].length.
-            //Sorting makes no sense here?? We're trying to find the Y length, not X!
             String[] parts = list.get(k).split("\n");
-            String[] parts2 = list.get(k).split("\n");
-            List<String> partssorted2 = Arrays.asList(parts);
-            partssorted2.sort(Comparator.comparing(String::length));
 
             //Create text
-            int sizeY = partssorted2.size();
+            int sizeY = parts.length;
             for (int i = 0; i < sizeY; i++) {
-                output += (SIDELEFT_S + parts2[i]);
-                for (int j = 0; j < (sizeX - parts2[i].length()); j++) {
+                output += (SIDELEFT_S + parts[i]);
+                for (int j = 0; j < (sizeX - parts[i].length()); j++) {
                     output += " ";
                 }
                 output += SIDERIGHT_S + "\n";

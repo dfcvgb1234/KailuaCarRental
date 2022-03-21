@@ -16,6 +16,7 @@ import sql.repositories.CustomerRepository;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,7 +31,6 @@ public class RentalSystem {
     public void mainMenu() throws ParseException {
 
         Scanner input = new Scanner(System.in);
-
         boolean exit=false;
         while(!exit){
 
