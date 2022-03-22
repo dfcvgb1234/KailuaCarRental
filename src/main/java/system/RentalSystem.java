@@ -8,11 +8,14 @@ import sql.components.cars.FamilyCar;
 import sql.components.cars.LuxuryCar;
 import sql.components.cars.SportsCar;
 import sql.components.customers.Customer;
+import sql.components.customers.DriverLicense;
 import sql.repositories.ActiveRentalContractsRepository;
 import sql.repositories.CarRepository;
 import sql.repositories.CompletedRentalContractsRepository;
 import sql.repositories.CustomerRepository;
 
+import java.sql.Date;
+import java.sql.Driver;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.Instant;
@@ -108,83 +111,79 @@ public class RentalSystem {
     }
 
     public void createRental(Scanner input) {
-        boolean exit = false;
 
-        while (!exit) {
+        ui.showInfoBox("You are about to create a new rental. Please enter the required information");
+        Customer customer = getCustomer(input);
+        if (customer == null) {
+            ui.showInfoBox("You have to specify a customer for a rental contract, exiting...");
+            return;
+        }
 
-            ui.showInfoBox("You are about to create a new rental. Please enter the required information");
-            Customer customer = getCustomer(input);
-            if (customer == null) {
-                ui.showInfoBox("You have to specify a customer for a rental contract, exiting...");
-                return;
-            }
+        viewAllAvailableCars(input);
+        Car car = getCar(input);
+        if (car == null) {
+            ui.showInfoBox("You have to specify a car for a rental contract, exiting...");
+            return;
+        }
 
-            viewAllAvailableCars(input);
-            Car car = getCar(input);
-            if (car == null) {
-                ui.showInfoBox("You have to specify a car for a rental contract, exiting...");
-                return;
-            }
-
-            // Get startdate timestamp, you can skip this value by pressing enter and not entering a value
-            // Default value will be current timestamp
-            Timestamp startDate = null;
-            System.out.println("(Optional) Enter the start date for the rental in the following format: DD-MM-YYYY");
-            String strStartDate = input.nextLine();
-            if (strStartDate != "") {
-                startDate = StringConverter.dateToTimestamp(StringConverter.toDate(strStartDate, "dd-MM-yyyy"));
-                if (startDate == null) {
-                    startDate = Timestamp.from(Instant.now());
-                }
-            }
-            else {
+        // Get startdate timestamp, you can skip this value by pressing enter and not entering a value
+        // Default value will be current timestamp
+        Timestamp startDate = null;
+        System.out.println("(Optional) Enter the start date for the rental in the following format: DD-MM-YYYY");
+        String strStartDate = input.nextLine();
+        if (strStartDate != "") {
+            startDate = StringConverter.dateToTimestamp(StringConverter.toDate(strStartDate, "dd-MM-yyyy"));
+            if (startDate == null) {
                 startDate = Timestamp.from(Instant.now());
             }
+        }
+        else {
+            startDate = Timestamp.from(Instant.now());
+        }
 
-            // Get enddate timestamp, you can skip this value by pressing enter and not entering a value
-            // Default value will be null
-            Timestamp endDate = null;
-            System.out.println("(Optional) Enter the end date for the rental in the following format: DD-MM-YYYY");
-            String strEndDate = input.nextLine();
-            if (strEndDate != "") {
-                endDate = StringConverter.dateToTimestamp(StringConverter.toDate(strEndDate, "dd-MM-yyyy"));
-                if (endDate == null) {
-                    endDate = null;
-                    strEndDate = "N/A";
-                }
-            }
-            else {
+        // Get enddate timestamp, you can skip this value by pressing enter and not entering a value
+        // Default value will be null
+        Timestamp endDate = null;
+        System.out.println("(Optional) Enter the end date for the rental in the following format: DD-MM-YYYY");
+        String strEndDate = input.nextLine();
+        if (strEndDate != "") {
+            endDate = StringConverter.dateToTimestamp(StringConverter.toDate(strEndDate, "dd-MM-yyyy"));
+            if (endDate == null) {
                 endDate = null;
                 strEndDate = "N/A";
             }
-
-            System.out.println("Enter the max amount of kilometers the customer is allowed to drive");
-            System.out.print("Enter kilometers: ");
-            int kilometers = Integer.parseInt(input.nextLine());
-
-            double calculatedPrice = kilometers * car.getPricePerKilometer();
-
-            if (ui.showYesNoDialogBox("RENTAL CONTRACT CONFIRMATION\n" +
-                    "Customer: "+customer.getName() + "\n"+
-                    "Car: " + car.getRegNumber() + "\n" +
-                    "Pickup date: " + startDate + "\n" +
-                    "Return date: " + strEndDate + "\n" +
-                    "Max kilometers: " + kilometers + "\n" +
-                    "Calculated price: " + calculatedPrice + "\n\n" +
-                    "Confirm?", input)) {
-
-                RentalContract contract = new RentalContract(car, customer, startDate, endDate, kilometers, calculatedPrice);
-                new ActiveRentalContractsRepository().insert(contract);
-                ui.showInfoBox("*** CONTRACT REGISTERED - THANK YOU ***");
-                exit = true;
-
-            }
         }
+        else {
+            endDate = null;
+            strEndDate = "N/A";
+        }
+
+        System.out.println("Enter the max amount of kilometers the customer is allowed to drive");
+        System.out.print("Enter kilometers: ");
+        int kilometers = Integer.parseInt(input.nextLine());
+
+        double calculatedPrice = kilometers * car.getPricePerKilometer();
+
+        if (ui.showYesNoDialogBox("RENTAL CONTRACT CONFIRMATION\n" +
+                "Customer: "+customer.getName() + "\n"+
+                "Car: " + car.getRegNumber() + "\n" +
+                "Pickup date: " + startDate + "\n" +
+                "Return date: " + strEndDate + "\n" +
+                "Max kilometers: " + kilometers + "\n" +
+                "Calculated price: " + calculatedPrice + "\n\n" +
+                "Confirm?", input)) {
+
+            RentalContract contract = new RentalContract(car, customer, startDate, endDate, kilometers, calculatedPrice);
+            new ActiveRentalContractsRepository().insert(contract);
+            ui.showInfoBox("*** CONTRACT REGISTERED - THANK YOU ***");
+
+        }
+
     }
 
     private Customer getCustomer(Scanner input) {
         Customer customer = null;
-        System.out.println("What is the customers phone number? (Remember country code, eg. +45)");
+        System.out.println("What is the customers phone number or press enter if you wish to create a new one?\n(Remember country code, eg. +45)");
         System.out.print("Enter Phone: ");
         String phoneNumber = input.nextLine();
 
@@ -193,10 +192,6 @@ public class RentalSystem {
         if (customer == null) {
             if (ui.showYesNoDialogBox("Customer not found\nDo you wish to create them?", input)) {
                 customer = createCustomer(input);
-
-                if (customer != null) {
-                    new CustomerRepository().insert(customer);
-                }
             }
         }
         else {
@@ -305,13 +300,13 @@ public class RentalSystem {
             String regNumber = input.nextLine();
 
             System.out.println("Looking up license plate on DMR...");
-            DMRCar car = new HttpHelper().getDMRCar(regNumber);
+            DMRCar dmrCar = new HttpHelper().getDMRCar(regNumber);
 
-            if (car != null) {
+            if (dmrCar != null) {
                 if (ui.showYesNoDialogBox("Car found!\n\n" +
-                        "Car Brand: " + car.getMaerkeTypeNavn() + "\n" +
-                        "Car Model: " + car.getModelTypeNavn() + "\n" +
-                        "Car Variant: " + car.getVariantTypeNavn() + "\n\n" +
+                        "Car Brand: " + dmrCar.getMaerkeTypeNavn() + "\n" +
+                        "Car Model: " + dmrCar.getModelTypeNavn() + "\n" +
+                        "Car Variant: " + dmrCar.getVariantTypeNavn() + "\n\n" +
                         "Is this correct?", input)) {
 
                     System.out.println("Please enter the price per kilometer for the car");
@@ -323,9 +318,9 @@ public class RentalSystem {
                     String carType = input.nextLine();
 
                     switch (carType.toLowerCase()) {
-                        case "luxury car" -> newCar = new LuxuryCar(car, pricePerKilometer);
-                        case "family car" -> newCar = new FamilyCar(car, pricePerKilometer);
-                        case "sports car" -> newCar = new SportsCar(car, pricePerKilometer);
+                        case "luxury car" -> newCar = new LuxuryCar(dmrCar, pricePerKilometer);
+                        case "family car" -> newCar = new FamilyCar(dmrCar, pricePerKilometer);
+                        case "sports car" -> newCar = new SportsCar(dmrCar, pricePerKilometer);
                         default -> System.out.println("Not a valid car type, please try again");
                     }
                 }
@@ -336,6 +331,7 @@ public class RentalSystem {
                 }
             }
         }
+
         System.out.println();
         System.out.println("Creating car, please wait...");
         new CarRepository().insert(newCar);
@@ -504,11 +500,148 @@ public class RentalSystem {
     public Customer createCustomer(Scanner input){
         ui.showInfoBox("Create a customer");
 
-        return null;
+        System.out.println("Enter the full name for the customer");
+        System.out.print("Enter full name: ");
+        String fullName = input.nextLine();
+
+        System.out.println("Enter the address for the customer (Address, ZipCode City, Country)");
+        System.out.print("Enter address: ");
+        String address = input.nextLine();
+
+        System.out.println("Enter the phonenumber for the customer");
+        System.out.print("Enter phonenumber: ");
+        String phonenumber = input.nextLine();
+
+        System.out.println("(Optional) Enter the mobilephone number for the customer");
+        System.out.print("Enter mobilephone number: ");
+        String mobilePhone = input.nextLine();
+
+        System.out.println("Enter email for the customer");
+        System.out.print("Enter email: ");
+        String email = input.nextLine();
+
+        ui.showInfoBox("Customer driverlicense info");
+
+        System.out.println("Enter the licensenumber for the license");
+        System.out.print("Enter licensenumber: ");
+        int licenseNumber = Integer.parseInt(input.nextLine());
+
+        System.out.println("(Optional) Enter the full name on the license");
+        System.out.print("Enter full name: ");
+        String licenseName = input.nextLine();
+        if (licenseName == "") {
+            licenseName = fullName;
+        }
+
+        System.out.println("Enter the start date date for the license (DD-MM-YYYY)");
+        System.out.print("Enter start date: ");
+        Date startDate = StringConverter.toDate(input.nextLine(), "dd-MM-yyyy");
+
+        System.out.println("Enter the expiration date for the license (DD-MM-YYYY)");
+        System.out.print("Enter expiration date: ");
+        Date expirationDate = StringConverter.toDate(input.nextLine(), "dd-MM-yyyy");
+
+        System.out.println("Enter the birthday date for the license (DD-MM-YYYY)");
+        System.out.print("Enter birthday: ");
+        Date birthday = StringConverter.toDate(input.nextLine(), "dd-MM-yyyy");
+
+        System.out.println("(Optional) Enter country of origin on the license");
+        System.out.print("Enter country of origin");
+        String countryOfOrigin = input.nextLine();
+        if (countryOfOrigin == "") {
+            countryOfOrigin = address.split(",")[2].trim();
+        }
+
+        DriverLicense license = new DriverLicense(licenseNumber, licenseName, startDate, expirationDate, birthday, countryOfOrigin);
+        Customer customer = new Customer(0, fullName, address, phonenumber, mobilePhone, email, license);
+
+        System.out.println();
+        System.out.println("Creating customer, please wait...");
+        new CustomerRepository().insert(customer);
+        return customer;
     }
 
     public void editCustomer(Scanner input){
+        ui.showInfoBox("Update a customer");
 
+        Customer customer = getCustomer(input);
+
+        if (customer == null) {
+            System.out.println("Customer not found");
+            return;
+        }
+
+        System.out.println("(Optional) Enter the address for the customer (Address, ZipCode City, Country)");
+        System.out.print("Enter address: ");
+        String address = input.nextLine();
+        if (address != "") {
+            customer.setAddress(address);
+        }
+
+        System.out.println("(Optional) Enter the phonenumber for the customer");
+        System.out.print("Enter phonenumber: ");
+        String phonenumber = input.nextLine();
+        if (phonenumber != "") {
+            customer.setMobilePhone(phonenumber);
+        }
+
+        System.out.println("(Optional) Enter the mobilephone number for the customer");
+        System.out.print("Enter mobilephone number: ");
+        String mobilePhone = input.nextLine();
+        if (mobilePhone != "") {
+            customer.setPhone(mobilePhone);
+        }
+
+        System.out.println("(Optional) Enter email for the customer");
+        System.out.print("Enter email: ");
+        String email = input.nextLine();
+        if (email != "") {
+            customer.setEmail(email);
+        }
+
+        ui.showInfoBox("Customer driverlicense info");
+
+        System.out.println("(Optional) Enter the full name on the license");
+        System.out.print("Enter full name: ");
+        String licenseName = input.nextLine();
+        if (licenseName != "") {
+            customer.getLicense().setLicenseName(licenseName);
+        }
+
+        System.out.println("(Optional) Enter the start date date for the license (DD-MM-YYYY)");
+        System.out.print("Enter start date: ");
+        String strStartDate = input.nextLine();
+        if (strStartDate != "") {
+            Date startDate = StringConverter.toDate(strStartDate, "dd-MM-yyyy");
+            customer.getLicense().setStartDate(startDate);
+        }
+
+        System.out.println("(Optional) Enter the expiration date for the license (DD-MM-YYYY)");
+        System.out.print("Enter expiration date: ");
+        String strExpirationDate = input.nextLine();
+        if (strExpirationDate != "") {
+            Date expirationDate = StringConverter.toDate(strExpirationDate, "dd-MM-yyyy");
+            customer.getLicense().setExpirationDate(expirationDate);
+        }
+
+        System.out.println("(Optional) Enter the birthday date for the license (DD-MM-YYYY)");
+        System.out.print("Enter birthday: ");
+        String strBirthday = input.nextLine();
+        if (strBirthday != "") {
+            Date birthday = StringConverter.toDate(strBirthday, "dd-MM-yyyy");
+            customer.getLicense().setBirthday(birthday);
+        }
+
+        System.out.println("(Optional) Enter country of origin on the license");
+        System.out.print("Enter country of origin");
+        String countryOfOrigin = input.nextLine();
+        if (countryOfOrigin != "") {
+            customer.getLicense().setCountryOfOrigin(countryOfOrigin);
+        }
+
+        System.out.println();
+        System.out.println("Updating customer, please wait...");
+        new CustomerRepository().insert(customer);
     }
 
     public void scheduleRepair(Scanner input){

@@ -79,6 +79,27 @@ public class ActiveRepairsRepository implements SqlRepository<Integer, Repair> {
         return repairs;
     }
 
+    public Repair findFirstByRegistrationNumber(String regNumber) {
+        SqlController controller = new SqlController("root", "Admin123");
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE CarId = ?", new SqlParameter<String>(regNumber));
+
+        try {
+            if (result != null) {
+                if (result.next()) {
+
+                    return getRepairFromResultSet(result);
+
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Last resort
+        return null;
+    }
+
     @Override
     public void insert(Repair repair) {
         SqlController controller = new SqlController("root", "Admin123");

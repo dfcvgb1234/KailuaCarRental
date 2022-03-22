@@ -84,8 +84,9 @@ public class CustomerRepository implements SqlRepository<Integer, Customer> {
         SqlController controller = new SqlController("root", "Admin123");
 
         String address = customer.getAddress().split(",")[0].trim();
-        int zipCode = Integer.parseInt(customer.getAddress().split(",")[1].trim());
-        String country = customer.getAddress().split(",")[3].trim();
+        String zip = customer.getAddress().split(",")[1].trim();
+        int zipCode = Integer.parseInt(zip.split(" ")[0].trim());
+        String country = customer.getAddress().split(",")[2].trim();
 
         DriverLicense license = customer.getLicense();
 
@@ -139,6 +140,11 @@ public class CustomerRepository implements SqlRepository<Integer, Customer> {
     }
 
     public Customer findFirstByPhonenumber(String phonenumber) {
+
+        if (phonenumber == "") {
+            return null;
+        }
+
         SqlController controller = new SqlController("root", "Admin123");
         ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE MobilePhone = ? OR Phone = ?",
                 new SqlParameter<String>(phonenumber),

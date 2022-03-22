@@ -216,11 +216,11 @@ public class CarRepository implements SqlRepository<String, Car> {
 
         Car.Builder carBuilder = new Car.Builder();
 
-        carBuilder.setRegNumber(result.getString("RegistrationNumber"));
-        carBuilder.setBrand(result.getString("Brand"));
-        carBuilder.setModel(result.getString("Model"));
-        carBuilder.setVariant(result.getString("Variant"));
-        carBuilder.setPricePerKilometer(result.getDouble("PricePerKilometer"));
+        carBuilder.setRegNumber(result.getString("RegistrationNumber"))
+                .setBrand(result.getString("Brand"))
+                .setModel(result.getString("Model"))
+                .setVariant(result.getString("Variant"))
+                .setPricePerKilometer(result.getDouble("PricePerKilometer"));
 
         String engineSpecs = result.getString("EngineSpecs");
         int engineSize = Integer.parseInt(engineSpecs.split(",")[0].trim());
@@ -228,10 +228,10 @@ public class CarRepository implements SqlRepository<String, Car> {
         String fuelType = engineSpecs.split(",")[2].trim();
         Engine carEngine = new Engine(engineSize, enginePower, fuelType);
 
-        carBuilder.setEngineConfiguration(carEngine);
-        carBuilder.setRegDate(result.getDate("RegistrationDate"));
-        carBuilder.setOdometer(result.getInt("Odometer"));
-        carBuilder.setCarFeatures(new ArrayList<String>(List.of(result.getString("CarFeatures").split(","))));
+        carBuilder.setEngineConfiguration(carEngine)
+                .setRegDate(result.getDate("RegistrationDate"))
+                .setOdometer(result.getInt("Odometer"))
+                .setCarFeatures(new ArrayList<String>(List.of(result.getString("CarFeatures").split(","))));
 
         return switch (result.getString("CarType").toLowerCase()) {
             case "sports car" -> carBuilder.buildSportsCar();

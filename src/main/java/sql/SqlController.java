@@ -65,16 +65,6 @@ public class SqlController {
         }
     }
 
-    public void test(String sql) {
-        Connection con = getConnection();
-        try {
-            Statement s = con.createStatement();
-            s.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     private Connection getConnection() {
         try {
             return DriverManager.getConnection(JDBC_URL, username, password);
