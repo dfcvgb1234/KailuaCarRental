@@ -93,4 +93,21 @@ public class Repair {
         this.cost = cost;
         this.mechanic = mechanic;
     }
+
+    public Repair(Car car, String repairLocation, String note, double cost, Mechanic mechanic){
+        this.car = car;
+        this.repairLocation = repairLocation;
+        this.note = note;
+        this.cost = cost;
+        this.mechanic = mechanic;
+    }
+
+    @Override
+    public String toString() {
+        return  "Mechanic: " + mechanic.getName() + "\n"+
+                "Car: " + car.getRegNumber() + "\n" +
+                "Repair location: " + repairLocation + "\n" +
+                "Note: " + note + "\n" +
+                "Estimated cost: " + cost + "\n";
+    }
 }

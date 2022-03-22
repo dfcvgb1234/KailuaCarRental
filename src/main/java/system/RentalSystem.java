@@ -4,16 +4,14 @@ import rest.DMRCar;
 import rest.HttpHelper;
 import sql.components.Mechanic;
 import sql.components.RentalContract;
+import sql.components.Repair;
 import sql.components.cars.Car;
 import sql.components.cars.FamilyCar;
 import sql.components.cars.LuxuryCar;
 import sql.components.cars.SportsCar;
 import sql.components.customers.Customer;
 import sql.components.customers.DriverLicense;
-import sql.repositories.ActiveRentalContractsRepository;
-import sql.repositories.CarRepository;
-import sql.repositories.CompletedRentalContractsRepository;
-import sql.repositories.CustomerRepository;
+import sql.repositories.*;
 
 import java.sql.Date;
 import java.sql.Driver;
@@ -654,31 +652,29 @@ public class RentalSystem {
         }
         //viewAllAvailableMechanics
         Mechanic mechanic = getMechanic(input);
-        ui.printCar();
-        System.out.print("Please select a number as illustrated, that refers to where the issue is located: ");
-        int repairLocation = Integer.parseInt(input.nextLine());
-        /*
-        if (ui.showYesNoDialogBox("RENTAL CONTRACT CONFIRMATION\n" +
-                "Customer: "+customer.getName() + "\n"+
+        String repairLocation = ui.getCarLocation(input);
+        System.out.print("Please enter repair notes (e.g. details of issue): ");
+        String repairNotes = input.nextLine();
+        System.out.print("What is the cost of the repair? (In DKK): ");
+        double repairCost = Double.parseDouble(input.nextLine());
+
+        if (ui.showYesNoDialogBox("REPAIR CONFIRMATION\n" +
+                "Mechanic: " + mechanic.getName() + "\n"+
                 "Car: " + car.getRegNumber() + "\n" +
-                "Pickup date: " + startDate + "\n" +
-                "Return date: " + strEndDate + "\n" +
-                "Max kilometers: " + kilometers + "\n" +
-                "Calculated price: " + calculatedPrice + "\n\n" +
+                "Repair Location: " + repairLocation + "\n" +
+                "Repair notes: " + repairNotes + "\n" +
+                "Estimated cost: " + repairCost + "\n\n" +
                 "Confirm?", input)) {
 
-            RentalContract contract = new RentalContract(car, customer, startDate, endDate, kilometers, calculatedPrice);
-            new ActiveRentalContractsRepository().insert(contract);
-            ui.showInfoBox("*** CONTRACT REGISTERED - THANK YOU ***");
-            exit = true;
-
+            Repair repair = new Repair(car, repairLocation, repairNotes, repairCost, mechanic);
+            new ActiveRepairsRepository().insert(repair);
+            ui.showInfoBox("*** REPAIR REGISTERED - THANK YOU ***");
         }
-         */
     }
 
     public void viewAllAvailableMechanics(){
-      //  List<Mechanic> mechanics = new MechanicRepository().getAllAvailableMechanics;
-      //  ui.showMultipleInfoBox(StringConverter.carListToStringList(mechanics));
+      List<Mechanic> mechanics = new MechanicRepository().getAll();
+      ui.showMultipleInfoBox(StringConverter.mechanicListToStringList(mechanics));
     }
 
     public Mechanic getMechanic(Scanner input){
@@ -687,7 +683,41 @@ public class RentalSystem {
     }
 
     public void viewActiveRepairs(Scanner input){
+        ui.showInfoBox("Here is a list of active repairs: ");
+        List<Repair> repairs = new ActiveRepairsRepository().getAll();
+        ui.showMultipleInfoBox(StringConverter.repairListToStringList(repairs));
 
+        ui.showActionBox("What action do you wish to perform?\n\n" +
+                "1: Complete Repair\n" +
+                "2: Back");
+
+        switch (Integer.parseInt(input.nextLine())) {
+            case 1 -> completeRepair(input);
+        }
+    }
+
+    public void completeRepair(Scanner input){
+        ui.showInfoBox("Complete repair");
+        System.out.println("Please enter the registration number for the car that is connected to the desired repair");
+        System.out.print("Enter Registration number: ");
+        String regNumber = input.nextLine();
+
+        System.out.println("(Optional) Please enter the final price for the repair");
+        System.out.print("Final price: ");
+        String price = input.nextLine();
+        double finalPrice;
+        if (price == "") {
+            finalPrice = new ActiveRepairsRepository().findFirstByRegistrationNumber(regNumber).getCost();
+        }
+        else {
+            finalPrice = Double.parseDouble(price);
+        }
+
+        System.out.println("Completing repair, please wait...");
+        Repair repair = new ActiveRepairsRepository().findFirstByRegistrationNumber(regNumber);
+        repair.setCost(finalPrice);
+        new RepairsHistoryRepository().insert(repair);
+        ui.showInfoBox("Repair successfully completed");
     }
 
     public void viewRepairHistory(Scanner input){

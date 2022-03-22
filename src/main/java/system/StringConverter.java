@@ -1,6 +1,8 @@
 package system;
 
+import sql.components.Mechanic;
 import sql.components.RentalContract;
+import sql.components.Repair;
 import sql.components.cars.Car;
 
 import java.sql.Date;
@@ -46,6 +48,24 @@ public class StringConverter {
         ArrayList<String> values = new ArrayList<>();
         for (RentalContract contract : contracts) {
             values.add(contract.toString());
+        }
+
+        return values;
+    }
+
+    public static ArrayList<String> repairListToStringList(List<Repair> repairs) {
+        ArrayList<String> values = new ArrayList<>();
+        for (Repair repair : repairs) {
+            values.add(repairs.toString());
+        }
+
+        return values;
+    }
+
+    public static ArrayList<String> mechanicListToStringList(List<Mechanic> mechanics) {
+        ArrayList<String> values = new ArrayList<>();
+        for (Mechanic mechanic : mechanics) {
+            values.add(mechanics.toString());
         }
 
         return values;

@@ -244,7 +244,7 @@ public class UI {
         }
     }
 
-    public void printCar(){
+    public String getCarLocation(Scanner input){
         showInfoBox("        _______\n" +
                 "       //  ||\\ \\\n" +
                 " __3__//_4_||_\\ \\_5_\n" +
@@ -252,5 +252,17 @@ public class UI {
                 " |_/ \\________/ \\___|\n" +
                 "   \\1/        \\2/ \n\n" +
                 "If not shown on illustration, press 6 for other.\n\n");
+        System.out.print("Please select a number as illustrated, that refers to where the issue is located: ");
+        switch (Integer.parseInt(input.nextLine())){
+            case 1 -> {return("Front wheel");}
+            case 2 -> {return("Back wheel");}
+            case 3 -> {return("Engine bay");}
+            case 4 -> {return("Door panel");}
+            case 5 -> {return("Trunk");}
+            case 6 -> {return("Other");}
+        }
+
+        //Last resort
+        return null;
     }
 }
