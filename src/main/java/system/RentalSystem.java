@@ -2,6 +2,7 @@ package system;
 
 import rest.DMRCar;
 import rest.HttpHelper;
+import sql.components.Mechanic;
 import sql.components.RentalContract;
 import sql.components.cars.Car;
 import sql.components.cars.FamilyCar;
@@ -241,7 +242,7 @@ public class RentalSystem {
     }
 
     private void viewAllCars(Scanner input) {
-        ui.showActionBox("What type of car would you like?\n1: Family\n2: Luxury\n3: Sport\n4: All");
+        ui.showActionBox("What type of car?\n1: Family\n2: Luxury\n3: Sport\n4: All");
         switch (input.nextLine().toLowerCase()) {
             case "1", "family":
                 List<Car> familyCars = new CarRepository().getAllCarsOfType("Family Car");
@@ -265,7 +266,7 @@ public class RentalSystem {
     }
 
     private void viewAllAvailableCars(Scanner input) {
-        ui.showActionBox("What type of car would you like?\n1: Family\n2: Luxury\n3: Sport\n4: All");
+        ui.showActionBox("What type of car?\n1: Family\n2: Luxury\n3: Sport\n4: All");
         switch (input.nextLine().toLowerCase()) {
             case "1", "family":
                 List<Car> familyCars = new CarRepository().getAllAvailableCarsOfType("Family Car");
@@ -645,7 +646,44 @@ public class RentalSystem {
     }
 
     public void scheduleRepair(Scanner input){
+        viewAllAvailableCars(input);
+        Car car = getCar(input);
+        if (car == null) {
+            ui.showInfoBox("You have to specify a car for a repair, exiting...");
+            return;
+        }
+        //viewAllAvailableMechanics
+        Mechanic mechanic = getMechanic(input);
+        ui.printCar();
+        System.out.print("Please select a number as illustrated, that refers to where the issue is located: ");
+        int repairLocation = Integer.parseInt(input.nextLine());
+        /*
+        if (ui.showYesNoDialogBox("RENTAL CONTRACT CONFIRMATION\n" +
+                "Customer: "+customer.getName() + "\n"+
+                "Car: " + car.getRegNumber() + "\n" +
+                "Pickup date: " + startDate + "\n" +
+                "Return date: " + strEndDate + "\n" +
+                "Max kilometers: " + kilometers + "\n" +
+                "Calculated price: " + calculatedPrice + "\n\n" +
+                "Confirm?", input)) {
 
+            RentalContract contract = new RentalContract(car, customer, startDate, endDate, kilometers, calculatedPrice);
+            new ActiveRentalContractsRepository().insert(contract);
+            ui.showInfoBox("*** CONTRACT REGISTERED - THANK YOU ***");
+            exit = true;
+
+        }
+         */
+    }
+
+    public void viewAllAvailableMechanics(){
+      //  List<Mechanic> mechanics = new MechanicRepository().getAllAvailableMechanics;
+      //  ui.showMultipleInfoBox(StringConverter.carListToStringList(mechanics));
+    }
+
+    public Mechanic getMechanic(Scanner input){
+
+        return null;
     }
 
     public void viewActiveRepairs(Scanner input){
@@ -655,4 +693,6 @@ public class RentalSystem {
     public void viewRepairHistory(Scanner input){
 
     }
+
+
 }

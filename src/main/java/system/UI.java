@@ -243,4 +243,14 @@ public class UI {
                 return showYesNoDialogBox(message, input);
         }
     }
+
+    public void printCar(){
+        showInfoBox("        _______\n" +
+                "       //  ||\\ \\\n" +
+                " __3__//_4_||_\\ \\_5_\n" +
+                " |  _          _    |\n" +
+                " |_/ \\________/ \\___|\n" +
+                "   \\1/        \\2/ \n\n" +
+                "If not shown on illustration, press 6 for other.\n\n");
+    }
 }
