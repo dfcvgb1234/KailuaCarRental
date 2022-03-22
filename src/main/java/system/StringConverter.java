@@ -56,7 +56,7 @@ public class StringConverter {
     public static ArrayList<String> repairListToStringList(List<Repair> repairs) {
         ArrayList<String> values = new ArrayList<>();
         for (Repair repair : repairs) {
-            values.add(repairs.toString());
+            values.add(repair.toString());
         }
 
         return values;
@@ -65,7 +65,7 @@ public class StringConverter {
     public static ArrayList<String> mechanicListToStringList(List<Mechanic> mechanics) {
         ArrayList<String> values = new ArrayList<>();
         for (Mechanic mechanic : mechanics) {
-            values.add(mechanics.toString());
+            values.add(mechanic.toString());
         }
 
         return values;

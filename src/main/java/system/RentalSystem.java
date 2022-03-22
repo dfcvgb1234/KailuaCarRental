@@ -650,12 +650,13 @@ public class RentalSystem {
             ui.showInfoBox("You have to specify a car for a repair, exiting...");
             return;
         }
-        //viewAllAvailableMechanics
+        ui.showInfoBox("Here is a list of previously used mechanics");
+        viewAllAvailableMechanics();
         Mechanic mechanic = getMechanic(input);
         String repairLocation = ui.getCarLocation(input);
         System.out.print("Please enter repair notes (e.g. details of issue): ");
         String repairNotes = input.nextLine();
-        System.out.print("What is the cost of the repair? (In DKK): ");
+        System.out.print("What is the estimated cost of the repair? (In DKK): ");
         double repairCost = Double.parseDouble(input.nextLine());
 
         if (ui.showYesNoDialogBox("REPAIR CONFIRMATION\n" +
@@ -679,7 +680,39 @@ public class RentalSystem {
 
     public Mechanic getMechanic(Scanner input){
 
-        return null;
+        System.out.println("Enter the phonenumber for the mechanic");
+        System.out.print("Enter phonenumber: ");
+        String phone = input.nextLine();
+
+        Mechanic mechanic = new MechanicRepository().findFirstById(phone);
+        if (mechanic == null) {
+            if (ui.showYesNoDialogBox("Mechanic not found\nDo you wish to create them?", input)) {
+                mechanic = createMechanic(input);
+            }
+        }
+        return mechanic;
+    }
+
+    public Mechanic createMechanic(Scanner input) {
+        ui.showInfoBox("Create mechanic");
+
+        System.out.println("Enter full name for the mechanic");
+        System.out.print("Enter full name: ");
+        String fullName = input.nextLine();
+
+        System.out.println("Enter address for the mechanic (Address, ZipCode City, Country)");
+        System.out.print("Enter address: ");
+        String address = input.nextLine();
+
+        System.out.println("Enter the phonenumber for the mechanic");
+        System.out.print("Enter phonenumber: ");
+        String phonenumber = input.nextLine();
+
+        Mechanic mechanic = new Mechanic(fullName, address, phonenumber);
+        System.out.println("Creating mechanic, please wait...");
+        new MechanicRepository().insert(mechanic);
+
+        return mechanic;
     }
 
     public void viewActiveRepairs(Scanner input){
@@ -716,6 +749,7 @@ public class RentalSystem {
         System.out.println("Completing repair, please wait...");
         Repair repair = new ActiveRepairsRepository().findFirstByRegistrationNumber(regNumber);
         repair.setCost(finalPrice);
+
         new RepairsHistoryRepository().insert(repair);
         ui.showInfoBox("Repair successfully completed");
     }

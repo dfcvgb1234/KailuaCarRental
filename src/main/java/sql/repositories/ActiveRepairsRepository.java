@@ -105,8 +105,9 @@ public class ActiveRepairsRepository implements SqlRepository<Integer, Repair> {
         SqlController controller = new SqlController("root", "Admin123");
 
         String address = repair.getMechanic().getAddress().split(",")[0].trim();
-        int zipCode = Integer.parseInt(repair.getMechanic().getAddress().split(",")[1].trim());
-        String country = repair.getMechanic().getAddress().split(",")[3].trim();
+        String zip = repair.getMechanic().getAddress().split(",")[1].trim();
+        int zipCode = Integer.parseInt(zip.split(" ")[0].trim());
+        String country = repair.getMechanic().getAddress().split(",")[2].trim();
 
         controller.performSQLUpdate("CALL sp_ScheduleRepair(?,?,?,?,?,?,?,?,?)",
                 new SqlParameter<String>(repair.getMechanic().getName()),
@@ -163,7 +164,7 @@ public class ActiveRepairsRepository implements SqlRepository<Integer, Repair> {
                 result.getTimestamp("StartTime"),
                 result.getString("RepairLocation"),
                 result.getString("Note"),
-                result.getDouble("Cost"),
+                result.getDouble("EstimatedCost"),
                 mechanic
         );
     }

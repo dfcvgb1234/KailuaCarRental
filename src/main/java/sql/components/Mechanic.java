@@ -23,4 +23,9 @@ public class Mechanic {
         this.address = address;
         this.phoneNumber = phoneNumber;
     }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + "\nAddress: " + address + "\nPhonenumber: " + phoneNumber;
+    }
 }

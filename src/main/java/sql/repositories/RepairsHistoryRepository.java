@@ -9,6 +9,8 @@ import sql.components.cars.Car;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,18 +84,26 @@ public class RepairsHistoryRepository implements SqlRepository<Integer, Repair> 
     @Override
     public void insert(Repair repair) {
         SqlController controller = new SqlController("root", "Admin123");
-        controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP(), Cost=? WHERE Id = ?",
+
+        Timestamp endTime = Timestamp.from(Instant.now());
+
+        controller.performSQLUpdate("UPDATE repairs SET EndTime = ?, Cost = ? WHERE CarId = ?",
+                new SqlParameter<Timestamp>(endTime),
                 new SqlParameter<Double>(repair.getCost()),
-                new SqlParameter<Integer>(repair.getId()));
+                new SqlParameter<String>(repair.getCar().getRegNumber()));
     }
 
     @Override
     public void insertAll(List<Repair> repairs) {
         SqlController controller = new SqlController("root", "Admin123");
+
+        Timestamp endTime = Timestamp.from(Instant.now());
+
         for (Repair repair : repairs) {
-            controller.performSQLUpdate("UPDATE repairs SET EndTime=CURRENT_TIMESTAMP(), Cost=? WHERE Id = ?",
+            controller.performSQLUpdate("UPDATE repairs SET EndTime = ?, Cost = ? WHERE CarId = ?",
+                    new SqlParameter<Timestamp>(endTime),
                     new SqlParameter<Double>(repair.getCost()),
-                    new SqlParameter<Integer>(repair.getId()));
+                    new SqlParameter<String>(repair.getCar().getRegNumber()));
         }
     }
 

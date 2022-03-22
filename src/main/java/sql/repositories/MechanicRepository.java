@@ -123,7 +123,7 @@ public class MechanicRepository implements SqlRepository<String, Mechanic> {
 
     private Mechanic getMechanicFromResultSet(ResultSet result) throws SQLException {
 
-        return new Mechanic(result.getString("Name"), result.getString("Address"), result.getString("Phonenumber"));
+        return new Mechanic(result.getString("FullName"), result.getString("Address"), result.getString("Phonenumber"));
 
     }
 }
