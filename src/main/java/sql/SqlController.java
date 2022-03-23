@@ -15,34 +15,34 @@ public class SqlController {
 
     private final String JDBC_URL = "jdbc:mysql://mysql.berggame.nu/car_rental_db";
 
-    public ResultSet performSQLSelect(String sql, SqlParameter... parameters) {
+    public ResultSet performSQLSelect(String query, SqlParameter... parameters) {
         Connection con = getConnection();
-        PreparedStatement s;
+        PreparedStatement statement;
         try {
-            s = con.prepareStatement(sql);
+            statement = con.prepareStatement(query);
             for (int i = 0; i < parameters.length; i++) {
                 switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {
-                    case "integer" -> s.setInt(i+1, (int) parameters[i].getValue());
-                    case "string" -> s.setString(i+1, (String) parameters[i].getValue());
-                    case "double" -> s.setDouble(i+1, (Double) parameters[i].getValue());
-                    case "boolean" -> s.setBoolean(i+1, (Boolean) parameters[i].getValue());
-                    case "date" -> s.setDate(i+1, (Date) parameters[i].getValue());
-                    case "timestamp" -> s.setTimestamp(i+1, (Timestamp) parameters[i].getValue());
-                    default -> s.setString(i+1, parameters[i].getValue().toString());
+                    case "integer" -> statement.setInt(i+1, (int) parameters[i].getValue());
+                    case "string" -> statement.setString(i+1, (String) parameters[i].getValue());
+                    case "double" -> statement.setDouble(i+1, (Double) parameters[i].getValue());
+                    case "boolean" -> statement.setBoolean(i+1, (Boolean) parameters[i].getValue());
+                    case "date" -> statement.setDate(i+1, (Date) parameters[i].getValue());
+                    case "timestamp" -> statement.setTimestamp(i+1, (Timestamp) parameters[i].getValue());
+                    default -> statement.setString(i+1, parameters[i].getValue().toString());
                 }
             }
-            return s.executeQuery();
+            return statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void performSQLUpdate(String sql, SqlParameter... parameters) {
+    public void performSQLUpdate(String query, SqlParameter... parameters) {
         Connection con = getConnection();
         PreparedStatement s;
         try {
-            s = con.prepareStatement(sql);
+            s = con.prepareStatement(query);
             for (int i = 0; i < parameters.length; i++) {
                 if (parameters[i].getValue() != null) {
                     switch (parameters[i].getValue().getClass().getSimpleName().toLowerCase()) {

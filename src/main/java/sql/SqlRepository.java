@@ -14,3 +14,5 @@ public interface SqlRepository<Key, T> {
     void deleteOnId(Key id);
 
 }
+
+

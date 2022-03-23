@@ -36,7 +36,7 @@ public class RentalSystem {
         boolean exit=false;
         while(!exit){
 
-            ui.showActionBox("Welcome to Kailua Car Rental V0.1!\n\nSelect an option:\n" +
+            ui.showActionBox("Welcome to Kailua Car Rental V1.0!\n\nSelect an option:\n" +
                     "1: Rentals\n" +
                     "2: Customers\n" +
                     "3: View cars\n" +
@@ -755,8 +755,27 @@ public class RentalSystem {
     }
 
     public void viewRepairHistory(Scanner input){
+        ui.showActionBox("Repair history\n\n" +
+                "1: Show all completed repair on a specific vehicle\n" +
+                "2: Show all completed rentals");
 
+        switch (Integer.parseInt(input.nextLine())) {
+            case 1 -> viewAllCompletedRepairsOnVehicle(input);
+            case 2 -> viewAllCompletedRepairs();
+        }
     }
 
+    private void viewAllCompletedRepairs() {
+        List<Repair> repairs = new RepairsHistoryRepository().getAll();
+        ui.showMultipleInfoBox(StringConverter.repairListToStringList(repairs));
+    }
 
+    private void viewAllCompletedRepairsOnVehicle(Scanner input) {
+        System.out.println("Enter the registration number for the vehicle");
+        System.out.print("Enter registration number: ");
+        String regNumber = input.nextLine();
+
+        List<Repair> repairs = new RepairsHistoryRepository().findAllWithRegistrationNumber(regNumber);
+        ui.showMultipleInfoBox(StringConverter.repairListToStringList(repairs));
+    }
 }

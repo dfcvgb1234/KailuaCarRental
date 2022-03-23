@@ -54,15 +54,9 @@ public class HttpHelper {
 
             body = response.body();
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        finally {
-            return body;
-        }
+        return body;
     }
 }

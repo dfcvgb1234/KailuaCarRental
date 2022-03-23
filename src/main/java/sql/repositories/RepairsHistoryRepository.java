@@ -133,4 +133,23 @@ public class RepairsHistoryRepository implements SqlRepository<Integer, Repair> 
                 mechanic
         );
     }
+
+    public List<Repair> findAllWithRegistrationNumber(String regNumber) {
+        SqlController controller = new SqlController("root", "Admin123");
+        ResultSet result = controller.performSQLSelect("SELECT * FROM " + VIEW_NAME + " WHERE CarId = ?", new SqlParameter<String>(regNumber));
+
+        List<Repair> repairs = new ArrayList<>();
+        try {
+            if (result != null) {
+                while (result.next()) {
+                    repairs.add(getRepairFromResultSet(result));
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return repairs;
+    }
 }

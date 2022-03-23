@@ -18,8 +18,6 @@ public abstract class Car {
     private Engine engineConfiguration;
     private ArrayList<String> carFeatures;
 
-
-
     public String getBrand() {
         return brand;
     }
